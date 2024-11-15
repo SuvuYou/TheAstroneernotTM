@@ -11,7 +11,7 @@ struct Triangle {
 public class ComputeCubes : MonoBehaviour
 {
     // Needs to be the same as in the MarchingCubesConst.hlsl
-    private static readonly int NUM_THREADS = 10;
+    private static readonly int NUM_THREADS = 8;
 
     [SerializeField]
     private ComputeShader _computeShader;
@@ -34,7 +34,7 @@ public class ComputeCubes : MonoBehaviour
 
     private Triangle[] _computeTrianglesOnGPU(Dictionary<Vector3Int, float> verticesActivationValues)
     {
-        int numberOfThreadsGroupsPerAxis = Mathf.CeilToInt(WorldDataSinglton.Instance.WORLD_SIZE / NUM_THREADS);
+        int numberOfThreadsGroupsPerAxis = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS) / NUM_THREADS);
 
         List<Vector4> verticesWithActivation = new ();
 
@@ -47,7 +47,7 @@ public class ComputeCubes : MonoBehaviour
         _computeShader.SetBuffer(kernelID, "vertices", _verticesBuffer);
         _computeShader.SetBuffer(kernelID, "triangles", _trianglesBuffer);
         _computeShader.SetFloat("activationThreashold", WorldDataSinglton.Instance.ACTIVATION_THRESHOLD);
-        _computeShader.SetInt("numberOfVerticesPerAxis", WorldDataSinglton.Instance.WORLD_SIZE);
+        _computeShader.SetInt("numberOfVerticesPerAxis", WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS);
 
         _trianglesBuffer.SetCounterValue(0);
 
@@ -83,7 +83,7 @@ public class ComputeCubes : MonoBehaviour
 
     private void _createBuffers()
     {
-        int verticesCount = (int)Mathf.Pow(WorldDataSinglton.Instance.WORLD_SIZE, 3);
+        int verticesCount = (int)Mathf.Pow(WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS, 3);
         int maxNumberOfTriangles = verticesCount * 5;
 
         _verticesBuffer = new ComputeBuffer(verticesCount, sizeof(float) * 4);

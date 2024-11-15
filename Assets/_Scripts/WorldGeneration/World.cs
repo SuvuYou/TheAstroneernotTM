@@ -5,93 +5,78 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    private List<Vector3Int> _vertices = new();
-    private Dictionary<Vector3Int, float> _acttivationValues = new();
+    private Dictionary<Vector3Int, Chunk> _chunks = new();
 
     [SerializeField]
-    private WorldMeshRenderer _meshRenderer;
+    private Chunk _chunkPrefab;
 
     [SerializeField]
     private ComputeCubes _computeCubes;
 
+    private float _cachedActivationValue = 0;
+
     private void Start()
     {
-        _generateCubes();
-        _generateWorldMesh();
+        _initChunks();
+        _renderAllChunksMeshes();
+    }
+
+    private void Update()
+    {
+        if (_cachedActivationValue != WorldDataSinglton.Instance.ACTIVATION_THRESHOLD)
+            _renderAllChunksMeshes();
+    }
+
+    private void _initChunks()
+    {
+        for (int x = 0; x < WorldDataSinglton.Instance.RENDER_DISTANCE; x += 1)
+        {
+            for (int z = 0; z < WorldDataSinglton.Instance.RENDER_DISTANCE; z += 1)
+            {
+                var chunkPosition = new Vector3Int(x, 0, z) * WorldDataSinglton.Instance.CHUNK_SIZE;
+                var chunk = Instantiate(_chunkPrefab, chunkPosition, Quaternion.identity);
+                chunk.GenerateChunkVoxels(chunkPosition);
+
+                _chunks.Add(chunkPosition, chunk);
+            }
+        }
+    }
+
+    private void _renderAllChunksMeshes() => _renderChunksMeshes(_chunks.Values.ToList());
+    
+    private void _renderChunksMeshesByPosition(List<Vector3Int> chunks) => _renderChunksMeshes(_chunks.Where(pair => chunks.Contains(pair.Key)).Select(pair => pair.Value).ToList());
+
+    private void _renderChunksMeshes(List<Chunk> chunks)
+    {
+        _cachedActivationValue = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD;
+
+        foreach (var chunk in chunks)
+        {
+            chunk.GenerateChunkMesh(_computeCubes);
+        }
     }
 
     public List<Vector3Int> GetVerticesByCondition(Func<Vector3Int, bool> condition)
     {
-        return _vertices.Where((Vector3Int vertex) => condition(vertex)).ToList();
-    }
-
-    public void UpdateVerticesActivation(Dictionary<Vector3Int, float> activationValues)
-    {
-        foreach(var vertex in activationValues.Keys)
-        {
-            if (_acttivationValues.ContainsKey(vertex) && !_isOuterLayer(vertex))
-            {
-                _acttivationValues[vertex] = activationValues[vertex];
-            }
-        }
-
-        _generateWorldMesh();
+        return _chunks.Values.SelectMany(chunk => chunk.Vertices.Select(vertex => vertex + chunk.ChunkPosition)).Where((Vector3Int vertex) => condition(vertex)).ToList();
     }
 
     public void AddVerticesActivation(Dictionary<Vector3Int, float> activationValues)
     {
-        foreach(var vertex in activationValues.Keys)
+        Dictionary<Vector3Int, List<Vector3Int>> VerticesByAffectedChunks = ChunkStaticManager.DivideVerticesByChunks(activationValues.Keys.ToList());
+        
+        foreach (var entity in VerticesByAffectedChunks)
         {
-            if (_acttivationValues.ContainsKey(vertex) && !_isOuterLayer(vertex))
-            {
-                _acttivationValues[vertex] += activationValues[vertex];
+            if (!_chunks.ContainsKey(entity.Key)) continue;
+            
+            var chunk = _chunks[entity.Key];
 
-                if (_acttivationValues[vertex] > 1) _acttivationValues[vertex] = 1;
-                if (_acttivationValues[vertex] < 0) _acttivationValues[vertex] = 0;
+            foreach(var vertex in entity.Value)
+            {
+                chunk.UpdateActivationValueViaGlobalVertexPosition(vertex, activationValues[vertex]);
             }
         }
-
-        _generateWorldMesh();
-    }
-
-    private void _generateWorldMesh()
-    {
-        List<Vector3> vertices = _computeCubes.ComputeTriangleVertices(_acttivationValues);
-
-        if (vertices.Count == 0) return;
-
-        ChunkMeshData meshData = new();
-
-        meshData.PushVertices(vertices.ToList());
-
-        _meshRenderer.RenderMesh(meshData);
-    }
-
-    private void _generateCubes()
-    {
-        for (int x = 0; x < WorldDataSinglton.Instance.WORLD_SIZE; x++)
-        {
-            for (int y = 0; y < WorldDataSinglton.Instance.WORLD_SIZE; y++)
-            {
-                for (int z = 0; z < WorldDataSinglton.Instance.WORLD_SIZE; z++)
-                {
-                    var verticePos = new Vector3Int(x, y, z);
-                    _vertices.Add(verticePos);
-                    var activationValue = 0f;
-
-                    if (!_isOuterLayer(verticePos))
-                        activationValue = Noise.GenerateNoiseAt((Vector3)verticePos / WorldDataSinglton.Instance.WORLD_SIZE);
-
-                    _acttivationValues[verticePos] = activationValue;
-                }
-            }
-        }
-    }
-
-    private bool _isOuterLayer(Vector3 vertex)
-    {
-        return vertex.x == 0 || vertex.x == WorldDataSinglton.Instance.WORLD_SIZE - 1 ||
-                vertex.y == 0 || vertex.y == WorldDataSinglton.Instance.WORLD_SIZE - 1 ||
-                vertex.z == 0 || vertex.z == WorldDataSinglton.Instance.WORLD_SIZE - 1;
+        
+        _renderChunksMeshesByPosition(VerticesByAffectedChunks.Keys.ToList());
     }
 }

@@ -17,7 +17,7 @@ public class UserControl : MonoBehaviour
 
     private Vector3 _hoverWorldPoint;
 
-    private bool _isAddingMode = true;
+    private bool _isAddingMode = false;
 
     private void Start()
     {
@@ -46,7 +46,7 @@ public class UserControl : MonoBehaviour
                 if (_isAddingMode)
                     verticesActivation[vertex] = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
                 else
-                    verticesActivation[vertex] = - WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
+                    verticesActivation[vertex] = -WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
             }
 
             _worldRef.AddVerticesActivation(verticesActivation);
@@ -65,7 +65,7 @@ public class UserControl : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            if (hit.collider.GetComponent<WorldMeshRenderer>() != null) 
+            if (hit.collider.GetComponent<ChunkMeshRenderer>() != null) 
             {
                 _hoverWorldPoint = hit.point;
                 _activeSphere.SetActive(true);

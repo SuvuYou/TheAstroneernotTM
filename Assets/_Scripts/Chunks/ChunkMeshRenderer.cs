@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
-public class WorldMeshRenderer : MonoBehaviour
+public class ChunkMeshRenderer : MonoBehaviour
 {
     private Mesh _mesh;
     private MeshCollider _meshCollider;
@@ -31,6 +31,11 @@ public class WorldMeshRenderer : MonoBehaviour
     {
         SetMeshData(meshData);
         _renderMesh(meshData);
+    }
+    
+    public void ClearMesh()
+    {
+        _mesh.Clear();
     }
 
     private void _renderMesh(ChunkMeshData meshData)

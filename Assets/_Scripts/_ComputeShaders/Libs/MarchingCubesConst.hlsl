@@ -1,4 +1,4 @@
-static const int NUM_THREADS = 10;
+static const int NUM_THREADS = 8;
 
 static const int2 EDGES[12] = {
     int2(0, 1),
