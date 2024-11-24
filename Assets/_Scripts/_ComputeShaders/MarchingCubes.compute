@@ -1,7 +1,8 @@
 #pragma kernel March
 #include "Assets/_Scripts/_ComputeShaders/Libs/MarchingCubesConst.hlsl"
 
-int numberOfVerticesPerAxis;
+int numberOfVerticesHorizontally;
+int numberOfVerticesVertically;
 float activationThreashold;
 
 struct Triangle {
@@ -15,7 +16,7 @@ AppendStructuredBuffer<int> test;
 RWStructuredBuffer<float4> vertices;
 
 int indexFromCoord(int3 vertex) {
-    return vertex.z * numberOfVerticesPerAxis * numberOfVerticesPerAxis + vertex.y * numberOfVerticesPerAxis + vertex.x;
+    return vertex.x * numberOfVerticesVertically * numberOfVerticesHorizontally + vertex.z * numberOfVerticesVertically + vertex.y;
 }
 
 float3 interpolateVerts(float4 v1, float4 v2) {
@@ -26,7 +27,7 @@ float3 interpolateVerts(float4 v1, float4 v2) {
 
 [numthreads(NUM_THREADS, NUM_THREADS, NUM_THREADS)]
 void March(uint3 id : SV_DispatchThreadID) {
-    if (id.x >= numberOfVerticesPerAxis - 1 || id.y >= numberOfVerticesPerAxis - 1 || id.z >= numberOfVerticesPerAxis - 1) {
+    if (id.x >= numberOfVerticesHorizontally - 1 || id.y >= numberOfVerticesVertically - 1 || id.z >= numberOfVerticesHorizontally - 1) {
         return;
     }
 

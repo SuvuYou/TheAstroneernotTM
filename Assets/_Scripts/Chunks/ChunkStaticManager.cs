@@ -65,7 +65,7 @@ public static class ChunkStaticManager
     public static bool IsVertexInOuterLayer(Vector3 vertex)
     {
         return vertex.x == 0 || vertex.x == WorldDataSinglton.Instance.RENDER_DISTANCE * WorldDataSinglton.Instance.CHUNK_SIZE ||
-                vertex.y == 0 || vertex.y == WorldDataSinglton.Instance.RENDER_DISTANCE * WorldDataSinglton.Instance.CHUNK_SIZE ||
+                vertex.y == 0 || vertex.y == WorldDataSinglton.Instance.CHUNK_HEIGHT ||
                 vertex.z == 0 || vertex.z == WorldDataSinglton.Instance.RENDER_DISTANCE * WorldDataSinglton.Instance.CHUNK_SIZE;
     }
 

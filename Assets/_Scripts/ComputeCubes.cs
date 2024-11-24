@@ -34,7 +34,8 @@ public class ComputeCubes : MonoBehaviour
 
     private Triangle[] _computeTrianglesOnGPU(Dictionary<Vector3Int, float> verticesActivationValues)
     {
-        int numberOfThreadsGroupsPerAxis = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS) / NUM_THREADS);
+        int numberOfThreadsGroupsHorizontally = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS) / NUM_THREADS);
+        int numberOfThreadsGroupsVertically = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS) / NUM_THREADS);
 
         List<Vector4> verticesWithActivation = new ();
 
@@ -47,11 +48,12 @@ public class ComputeCubes : MonoBehaviour
         _computeShader.SetBuffer(kernelID, "vertices", _verticesBuffer);
         _computeShader.SetBuffer(kernelID, "triangles", _trianglesBuffer);
         _computeShader.SetFloat("activationThreashold", WorldDataSinglton.Instance.ACTIVATION_THRESHOLD);
-        _computeShader.SetInt("numberOfVerticesPerAxis", WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS);
+        _computeShader.SetInt("numberOfVerticesHorizontally", WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS);
+        _computeShader.SetInt("numberOfVerticesVertically", WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS);
 
         _trianglesBuffer.SetCounterValue(0);
 
-        _computeShader.Dispatch(kernelID, numberOfThreadsGroupsPerAxis, numberOfThreadsGroupsPerAxis, numberOfThreadsGroupsPerAxis);
+        _computeShader.Dispatch(kernelID, numberOfThreadsGroupsHorizontally, numberOfThreadsGroupsVertically, numberOfThreadsGroupsHorizontally);
 
         // Get the count of generated triangles
         int[] triangleCountArray = new int[1];
@@ -83,7 +85,7 @@ public class ComputeCubes : MonoBehaviour
 
     private void _createBuffers()
     {
-        int verticesCount = (int)Mathf.Pow(WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS, 3);
+        int verticesCount = (int)(Mathf.Pow(WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS, 2) * WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS);
         int maxNumberOfTriangles = verticesCount * 5;
 
         _verticesBuffer = new ComputeBuffer(verticesCount, sizeof(float) * 4);

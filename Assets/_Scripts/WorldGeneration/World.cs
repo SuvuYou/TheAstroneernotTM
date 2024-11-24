@@ -27,6 +27,13 @@ public class World : MonoBehaviour
             _renderAllChunksMeshes();
     }
 
+    public void Regenerate()
+    {
+        _clearChunks();
+        _initChunks();
+        _renderAllChunksMeshes();
+    }
+
     private void _initChunks()
     {
         for (int x = 0; x < WorldDataSinglton.Instance.RENDER_DISTANCE; x += 1)
@@ -40,6 +47,14 @@ public class World : MonoBehaviour
                 _chunks.Add(chunkPosition, chunk);
             }
         }
+    }
+
+    private void _clearChunks()
+    {
+        foreach (var chunk in _chunks.Values)
+            Destroy(chunk.gameObject);
+        
+        _chunks.Clear();
     }
 
     private void _renderAllChunksMeshes() => _renderChunksMeshes(_chunks.Values.ToList());

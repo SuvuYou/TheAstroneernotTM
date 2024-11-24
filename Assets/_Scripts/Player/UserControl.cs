@@ -44,9 +44,9 @@ public class UserControl : MonoBehaviour
             foreach (var vertex in _worldRef.GetVerticesByCondition(_isVertexInSphere)) 
             {
                 if (_isAddingMode)
-                    verticesActivation[vertex] = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
-                else
                     verticesActivation[vertex] = -WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
+                else
+                    verticesActivation[vertex] = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
             }
 
             _worldRef.AddVerticesActivation(verticesActivation);
