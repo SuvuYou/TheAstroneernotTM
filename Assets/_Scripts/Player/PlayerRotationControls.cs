@@ -3,7 +3,7 @@ using UnityEngine;
 class PlayerRotationControls : MonoBehaviour
 {
     [SerializeField]
-    private Transform _playerTransform;
+    private Transform _playerVisualTransform;
     
     [SerializeField]
     private Transform _playerFocalPointTransform;
@@ -17,11 +17,11 @@ class PlayerRotationControls : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         var cameraRotation = Quaternion.LookRotation(_cameraInputValues.CameraLookDirection);
-        
+
+        _playerVisualTransform.eulerAngles = new Vector3(0, cameraRotation.eulerAngles.y, 0);  
         _playerFocalPointTransform.rotation = cameraRotation;
-        _playerTransform.eulerAngles = new Vector3(0, cameraRotation.eulerAngles. y, 0);
     }
 }
