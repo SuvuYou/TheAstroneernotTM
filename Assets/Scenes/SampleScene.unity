@@ -135,6 +135,8 @@ GameObject:
   - component: {fileID: 71950584}
   - component: {fileID: 71950586}
   - component: {fileID: 71950582}
+  - component: {fileID: 71950587}
+  - component: {fileID: 71950588}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -154,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f551e062f30db3b468825ee337bec245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerTransform: {fileID: 71950585}
+  _playerVisualTransform: {fileID: 1365107420}
   _playerFocalPointTransform: {fileID: 1490279079}
   _cameraInputValues: {fileID: 11400000, guid: fa9b6a6b8ff67994485c53f823242d35, type: 2}
 --- !u!114 &71950584
@@ -200,8 +202,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _worldRef: {fileID: 984108929}
-  _sphereVisualPrefab: {fileID: 0}
-  _playerInputValues: {fileID: 0}
+  _sphereVisualPrefab: {fileID: -719793524212530151, guid: 686d4c308dd2a164cbcb39655f028bc4,
+    type: 3}
+  _playerInputValues: {fileID: 11400000, guid: 7162920f0fa53ea45a3f5237ba349333, type: 2}
+--- !u!54 &71950587
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71950581}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
+--- !u!114 &71950588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71950581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32b25602e41d48a4692716bdbf6c4060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraInputValues: {fileID: 11400000, guid: fa9b6a6b8ff67994485c53f823242d35, type: 2}
+  _jumpForce: 25
+  _movementSpeed: 75
+  _maxMovementSpeed: 25
+  _defaultGravityScale: 2
+  _fallingGravityScale: 5
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +404,7 @@ MonoBehaviour:
   target: {fileID: 1490279079}
   _transformOffset: {x: 0, y: 4, z: -14}
   _rotationOffset: {x: 0, y: 0, z: 0}
-  _interpolationSpeed: 1
+  _interpolationSpeed: 100
   _rotateWithTarget: 1
   _interpolationPosition: 0
   _interpolationRotation: 0
@@ -883,7 +931,7 @@ Transform:
   m_GameObject: {fileID: 1365107414}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
