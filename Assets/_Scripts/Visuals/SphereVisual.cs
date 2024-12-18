@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class SphereVisual : MonoBehaviour
@@ -5,7 +6,9 @@ public class SphereVisual : MonoBehaviour
     [SerializeField]
     private PlayerInputValues _playerInputValues;
     
-    private float _sphereRadius = 1f;
+    public float SphereRadius { get; private set; } = 1f;
+
+    private float _squareRadius => SphereRadius * SphereRadius;
 
     private float _sphereRadiusSensitivity = 1f;
 
@@ -17,7 +20,7 @@ public class SphereVisual : MonoBehaviour
 
     public void MoveTo(Vector3 targetPosition) => transform.position = targetPosition;
     
-    public bool IsVertexInSphere(Vector3Int vertex) => Vector3.Distance(transform.position, vertex) <= _sphereRadius;
+    public bool IsVertexInSphere(Vector3Int vertex) => Vector3.Distance(transform.position, vertex) <= SphereRadius;
 
     public void Activate() => gameObject.SetActive(true);
 
@@ -25,10 +28,10 @@ public class SphereVisual : MonoBehaviour
 
     private void _updateSphereRadious()
     {
-        _sphereRadius += _playerInputValues.MouseMovementInput.x * _sphereRadiusSensitivity;
+        SphereRadius += _playerInputValues.MouseMovementInput.x * _sphereRadiusSensitivity;
 
-        if (_sphereRadius <= 0.1f) _sphereRadius = 0.1f;
+        if (SphereRadius <= 0.1f) SphereRadius = 0.1f;
 
-        transform.localScale = new Vector3(_sphereRadius, _sphereRadius, _sphereRadius);
+        transform.localScale = new Vector3(SphereRadius, SphereRadius, SphereRadius);
     }
 }

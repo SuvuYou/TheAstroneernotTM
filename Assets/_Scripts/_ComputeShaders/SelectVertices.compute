@@ -1,0 +1,24 @@
+#pragma kernel Select
+
+static const int NUM_THREADS = 128;
+
+float3 circleCenterPoint;
+float circleRadius;
+
+AppendStructuredBuffer<int3> selectedVertices;
+RWStructuredBuffer<int3> vertices;
+
+[numthreads(NUM_THREADS, 1, 1)] 
+void Select(uint3 id : SV_DispatchThreadID) {
+    uint index = id.x;
+    if (index >= vertices.Length) return;
+
+    int3 vertex = vertices[index];
+
+    float3 diff = vertex - circleCenterPoint;
+    float sqDist = dot(diff, diff);
+
+    if (sqDist <= circleRadius * circleRadius) {
+        selectedVertices.Append(vertex);
+    }
+}

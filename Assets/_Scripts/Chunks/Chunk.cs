@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -58,9 +57,9 @@ public class Chunk : MonoBehaviour
                 for (int y = WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS - 1; y >= 0; y--)
                 {   
                     var localVerticePos = new Vector3Int(x, y, z);
-                    Vertices.Add(localVerticePos);
-
                     var globalVerticePos = _convertLocalVertexPositionToGlobalVertexPosition(localVerticePos);
+
+                    Vertices.Add(globalVerticePos);
                     
                     var activationValue = 0f;
 
@@ -80,6 +79,11 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool IsVertexInChunk(Vector3Int vertex)
+    {
+        return vertex.x >= ChunkPosition.x && vertex.x < ChunkPosition.x + WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS && vertex.z >= ChunkPosition.z && vertex.z < ChunkPosition.z + WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS && vertex.y >= 0 && vertex.y < WorldDataSinglton.Instance.CHUNK_HEIGHT;
     }
 
     private Vector3Int _convertGlobalVertexPositionToLocalVertexPosition(Vector3Int globalVertexPosition)

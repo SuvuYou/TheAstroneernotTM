@@ -12,7 +12,6 @@ struct Triangle {
 };
 
 AppendStructuredBuffer<Triangle> triangles;
-AppendStructuredBuffer<int> test;
 RWStructuredBuffer<float4> vertices;
 
 int indexFromCoord(int3 vertex) {

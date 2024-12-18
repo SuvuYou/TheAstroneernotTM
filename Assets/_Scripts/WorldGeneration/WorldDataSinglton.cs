@@ -13,7 +13,7 @@ public class WorldDataSinglton : MonoBehaviour
     private int _caveThreshold = 15;
 
     [SerializeField]
-    private int _renderDistance = 2;
+    private int _renderDistance = 4;
 
     [SerializeField]
     private int _chunkSize = 15;

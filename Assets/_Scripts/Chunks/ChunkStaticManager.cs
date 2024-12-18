@@ -9,7 +9,7 @@ public static class ChunkStaticManager
 
         foreach (var vertex in vertices)
         {
-            var chunksPositions = _getChunksContainingVertex(vertex);
+            var chunksPositions = GetChunksContainingVertex(vertex);
 
             foreach(var chunkPosition in chunksPositions)
             {
@@ -25,11 +25,11 @@ public static class ChunkStaticManager
         return chunksWithVertices;
     }
 
-    private static List<Vector3Int> _getChunksContainingVertex(Vector3Int globalVertexPosition)
+    public static List<Vector3Int> GetChunksContainingVertex(Vector3Int globalVertexPosition)
     {
         List<Vector3Int> chunkPositions = new ();
 
-        var originalChunkPosition = _getLocalVertexPosition(globalVertexPosition);
+        var originalChunkPosition = GetChunkCoordinatsByGlobalVertexPosition(globalVertexPosition);
         chunkPositions.Add(originalChunkPosition);
 
         // Up to 3 intersection chunks
@@ -54,7 +54,7 @@ public static class ChunkStaticManager
         return chunkPositions;
     }
 
-    private static Vector3Int _getLocalVertexPosition(Vector3Int globalVertexPosition)
+    public static Vector3Int GetChunkCoordinatsByGlobalVertexPosition(Vector3Int globalVertexPosition)
     {
         var x = globalVertexPosition.x / WorldDataSinglton.Instance.CHUNK_SIZE * WorldDataSinglton.Instance.CHUNK_SIZE;
         var z = globalVertexPosition.z / WorldDataSinglton.Instance.CHUNK_SIZE * WorldDataSinglton.Instance.CHUNK_SIZE;

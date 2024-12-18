@@ -16,6 +16,10 @@ public class PlayerControls : MonoBehaviour
 
     private bool _isAddingMode = false;
 
+    private const int REPETITION_FRAME_COUNT = 4;
+    private int _frameCounter = 0;
+    private float _cumulativeFrameDeltaTime = 0;
+
     private void Start()
     {
         _sphereVisual = Instantiate(_sphereVisualPrefab, Vector3.zero, Quaternion.identity);
@@ -24,6 +28,8 @@ public class PlayerControls : MonoBehaviour
 
     private void Update()
     {
+        _cumulativeFrameDeltaTime += Time.deltaTime;
+
         if (Input.GetKeyDown(KeyCode.V))
             _isAddingMode = !_isAddingMode;
 
@@ -31,22 +37,58 @@ public class PlayerControls : MonoBehaviour
             _moveSphereVisual();
 
         if (_playerInputValues.IsHoldingLeftMouseButton)
-            _updateActivationValueInSphereRadious();
+        {
+            _frameCounter++;
+
+            if (_frameCounter >= REPETITION_FRAME_COUNT - 1)
+            {
+                _updateActivationValueInSphereRadious();
+
+                _frameCounter = 0;
+                _cumulativeFrameDeltaTime = 0;
+            }
+        }
+        else
+        {
+            _frameCounter = 0;
+            _cumulativeFrameDeltaTime = 0;
+        }
     }
 
     private void _updateActivationValueInSphereRadious()
     {
-        Dictionary<Vector3Int, float> verticesActivation = new();
+        Dictionary<Vector3Int, List<Vector3Int>> vertexNeighbours = new();
 
-        foreach (var vertex in _worldRef.GetVerticesByCondition(_sphereVisual.IsVertexInSphere)) 
+        foreach (var vertex in _worldRef.GetVerticesInRadius(_sphereVisual.transform.position, _sphereVisual.SphereRadius)) 
         {
-            if (_isAddingMode)
-                verticesActivation[vertex] = -WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
-            else
-                verticesActivation[vertex] = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
+            vertexNeighbours[vertex] = _getNeighbours(vertex);
         }
 
-        _worldRef.AddVerticesActivation(verticesActivation);
+        float value = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * _cumulativeFrameDeltaTime * Mathf.Sqrt(REPETITION_FRAME_COUNT);
+
+        if (_isAddingMode)
+            value *= -1;
+
+        _worldRef.AddVerticesActivation(vertexNeighbours, value);
+    }
+
+    private List<Vector3Int> _getNeighbours(Vector3Int vertex)
+    {
+        return new List<Vector3Int>() {
+            vertex + new Vector3Int(-1, 0, 0), vertex + new Vector3Int(1, 0, 0), 
+            vertex + new Vector3Int(0, 0, -1), vertex + new Vector3Int(0, 0, 1), 
+            vertex + new Vector3Int(0, -1, 0), vertex + new Vector3Int(0, 1, 0),
+            vertex + new Vector3Int(-1, -1, 0), vertex + new Vector3Int(1, 1, 0),
+            vertex + new Vector3Int(0, -1, -1), vertex + new Vector3Int(0, 1, 1),
+            vertex + new Vector3Int(-1, 0, -1), vertex + new Vector3Int(1, 0, 1),
+            vertex + new Vector3Int(1, -1, 0), vertex + new Vector3Int(-1, 1, 0),
+            vertex + new Vector3Int(0, 1, -1), vertex + new Vector3Int(0, -1, 1),
+            vertex + new Vector3Int(1, 0, -1), vertex + new Vector3Int(-1, 0, 1),
+            vertex + new Vector3Int(1, 1, 1), vertex + new Vector3Int(-1, -1, -1),
+            vertex + new Vector3Int(-1, 1, 1), vertex + new Vector3Int(1, -1, -1),
+            vertex + new Vector3Int(1, -1, 1), vertex + new Vector3Int(-1, 1, -1),
+            vertex + new Vector3Int(1, 1, -1), vertex + new Vector3Int(-1, -1, 1),
+        };
     }
 
     private void _moveSphereVisual()
