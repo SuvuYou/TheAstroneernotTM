@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class ChunkStaticManager
 {
+    public static List<Vector3Int> GetChunksContainingVertices(List<Vector3Int> vertices) => vertices.SelectMany(vertex => GetChunksContainingVertex(vertex)).Distinct().ToList();
+
     public static Dictionary<Vector3Int, List<Vector3Int>> DivideVerticesByChunks(List<Vector3Int> vertices)
     {
         Dictionary<Vector3Int, List<Vector3Int>> chunksWithVertices = new ();

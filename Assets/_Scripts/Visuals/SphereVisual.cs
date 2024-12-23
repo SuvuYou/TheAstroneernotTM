@@ -6,9 +6,7 @@ public class SphereVisual : MonoBehaviour
     [SerializeField]
     private PlayerInputValues _playerInputValues;
     
-    public float SphereRadius { get; private set; } = 1f;
-
-    private float _squareRadius => SphereRadius * SphereRadius;
+    public float SphereRadius { get; private set; } = 10f;
 
     private float _sphereRadiusSensitivity = 1f;
 

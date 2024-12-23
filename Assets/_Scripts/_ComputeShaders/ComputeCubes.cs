@@ -25,22 +25,18 @@ public class ComputeCubes : MonoBehaviour
         _createBuffers();
     }
 
-    public List<Vector3> ComputeTriangleVertices(Dictionary<Vector3Int, float> verticesActivationValues)
+    public List<Vector3> ComputeTriangleVertices(List<Vector4> verticesWithActivation)
     {
-        Triangle[] triangles = _computeTrianglesOnGPU(verticesActivationValues);
+        Triangle[] triangles = _computeTrianglesOnGPU(verticesWithActivation);
 
         return _extractTriangleVertices(triangles);
     }
 
-    private Triangle[] _computeTrianglesOnGPU(Dictionary<Vector3Int, float> verticesActivationValues)
+    private Triangle[] _computeTrianglesOnGPU(List<Vector4> verticesWithActivation)
     {
         int numberOfThreadsGroupsHorizontally = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS) / NUM_THREADS);
         int numberOfThreadsGroupsVertically = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS) / NUM_THREADS);
 
-        List<Vector4> verticesWithActivation = new ();
-
-        verticesWithActivation = verticesActivationValues.Keys.Select((Vector3Int vertex) => new Vector4(vertex.x, vertex.y, vertex.z, verticesActivationValues[vertex])).ToList();
-        
         _verticesBuffer.SetData(verticesWithActivation);
 
         int kernelID = _computeShader.FindKernel("March");

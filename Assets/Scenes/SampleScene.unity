@@ -135,8 +135,9 @@ GameObject:
   - component: {fileID: 71950584}
   - component: {fileID: 71950586}
   - component: {fileID: 71950582}
-  - component: {fileID: 71950587}
+  - component: {fileID: 71950589}
   - component: {fileID: 71950588}
+  - component: {fileID: 71950587}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -214,7 +215,7 @@ Rigidbody:
   m_GameObject: {fileID: 71950581}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 2
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -245,9 +246,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cameraInputValues: {fileID: 11400000, guid: fa9b6a6b8ff67994485c53f823242d35, type: 2}
+  _playerInputValues: {fileID: 11400000, guid: 7162920f0fa53ea45a3f5237ba349333, type: 2}
   _jumpForce: 25
   _movementSpeed: 75
   _maxMovementSpeed: 25
+  _groundCheckRaycastDistance: 0.25
+--- !u!114 &71950589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71950581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1bf2b2563c9bd24b81b34c87076afa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _defaultGravityScale: 2
   _fallingGravityScale: 5
 --- !u!1 &330585543
@@ -737,6 +752,7 @@ GameObject:
   - component: {fileID: 984108934}
   - component: {fileID: 984108929}
   - component: {fileID: 984108937}
+  - component: {fileID: 984108938}
   - component: {fileID: 984108936}
   m_Layer: 0
   m_Name: World
@@ -760,6 +776,7 @@ MonoBehaviour:
   _chunkPrefab: {fileID: 4864710737022952202, guid: 1e0daaff100a4e946b6bbb5f572bca07,
     type: 3}
   _computeCubes: {fileID: 984108937}
+  _selectVertices: {fileID: 984108938}
 --- !u!4 &984108930
 Transform:
   m_ObjectHideFlags: 0
@@ -830,6 +847,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _computeShader: {fileID: 7200000, guid: 372befa99ce49ed44a9b90c419017827, type: 3}
+--- !u!114 &984108938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984108928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4efb6e8fe6b561043b470e6404e29f4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _computeShader: {fileID: 7200000, guid: 82842923b0532794aa2b5da401e13111, type: 3}
 --- !u!1 &1365107414
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,7 +992,7 @@ Transform:
   m_GameObject: {fileID: 1490279078}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -10,8 +10,6 @@ public class SelectVertices : MonoBehaviour
     private ComputeBuffer _selectedVerticesBuffer;
     private ComputeBuffer _selectedVerticesCountBuffer;
 
-    private ComputeBuffer debugBuffer;
-
     [SerializeField]
     private ComputeShader _computeShader;
 
@@ -55,8 +53,6 @@ public class SelectVertices : MonoBehaviour
     private void _createBuffers()
     {
         int verticesCount = (int)(Mathf.Pow(WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS, 2) * WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS) * WorldDataSinglton.Instance.RENDER_DISTANCE * WorldDataSinglton.Instance.RENDER_DISTANCE;
-        Debug.Log(verticesCount);
-        debugBuffer = new ComputeBuffer(verticesCount, sizeof(float));
 
         _verticesBuffer = new ComputeBuffer(verticesCount, sizeof(int) * 3);
         _selectedVerticesBuffer = new ComputeBuffer(verticesCount, sizeof(int) * 3, ComputeBufferType.Append);
@@ -70,6 +66,5 @@ public class SelectVertices : MonoBehaviour
         _verticesBuffer?.Release();
         _selectedVerticesBuffer?.Release();
         _selectedVerticesCountBuffer?.Release();
-        debugBuffer?.Release();
     }
 }
