@@ -5,7 +5,7 @@ public class Vertex
 {
     public Vector3Int Coordinats { get; private set; }
     public float Activation { get; private set; }
-    public List<Chunk> ParentChunks { get; private set; } = new();
+    public List<ChunkAlloc> ParentChunks { get; private set; } = new();
 
     public bool IsEdgeVertex { get; set; }
 
@@ -16,7 +16,7 @@ public class Vertex
         Activation = activation;
     }
 
-    public void AddParentChunkLink(Chunk chunk) => ParentChunks.Add(chunk);
+    public void AddParentChunkLink(ChunkAlloc chunk) => ParentChunks.Add(chunk);
 
     public void UpdateActivation(float activation) => Activation = activation;
 

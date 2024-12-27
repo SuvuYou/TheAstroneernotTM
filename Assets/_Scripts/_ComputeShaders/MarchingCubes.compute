@@ -54,7 +54,7 @@ void March(uint3 id : SV_DispatchThreadID) {
     }
 
     // 3. Go over all triangles in triangulation table
-    for (int i = 0; TRIANGULATIONS[cubeIndex][i] != -1; i +=3) {
+    for (int i = 0; TRIANGULATIONS[cubeIndex][i] != -1; i += 3) {
 
         // 4. Get edges of the cube that need to be connected
         int2 edgeA = EDGES[TRIANGULATIONS[cubeIndex][i]];

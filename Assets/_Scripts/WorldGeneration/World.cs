@@ -7,11 +7,11 @@ using System.Collections.Concurrent;
 
 public class World : MonoBehaviour
 {
-    private Dictionary<Vector3Int, Chunk> _chunks = new();
+    private Dictionary<Vector3Int, ChunkAlloc> _chunks = new();
     private Dictionary<Vector3Int, Vertex> _vertices = new();
 
     [SerializeField]
-    private Chunk _chunkPrefab;
+    private ChunkAlloc _chunkPrefab;
 
     [SerializeField]
     private ComputeCubes _computeCubes;
@@ -20,6 +20,11 @@ public class World : MonoBehaviour
     private SelectVertices _selectVertices;
 
     private float _cachedActivationValue = 0;
+
+    private ConcurrentBag<CustomVertex> _bagOfVertices = new ();
+
+    private CustomVertex[] _updatingVerticesHolder = new CustomVertex[100000]; 
+    private int _updatingVerticesHolderSize = 0;
 
     private void Start()
     {
@@ -53,7 +58,7 @@ public class World : MonoBehaviour
         }
     }
 
-    private Chunk _createChunk(int chunkPositionX, int chunkPositionZ)
+    private ChunkAlloc _createChunk(int chunkPositionX, int chunkPositionZ)
     {
         var chunkPositionInWorldSpace = new Vector3Int(chunkPositionX, 0, chunkPositionZ) * WorldDataSinglton.Instance.CHUNK_SIZE;
         var chunk = Instantiate(_chunkPrefab, chunkPositionInWorldSpace, Quaternion.identity);
@@ -65,7 +70,7 @@ public class World : MonoBehaviour
         return chunk;
     }
 
-    private void _createChunkVertices(Chunk chunk)
+    private void _createChunkVertices(ChunkAlloc chunk)
     {
         for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
         {
@@ -106,7 +111,7 @@ public class World : MonoBehaviour
         }
     }
 
-    private void _linkVerticesToChunks(Chunk chunk)
+    private void _linkVerticesToChunks(ChunkAlloc chunk)
     {
         for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
         {
@@ -118,7 +123,7 @@ public class World : MonoBehaviour
                     var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
 
                     _vertices[globalVertexPos].AddParentChunkLink(chunk);
-                    chunk.AddVertexLink(_vertices[globalVertexPos]);
+                    chunk.AddVertexLink(_vertices[globalVertexPos], x * WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS + y * WorldDataSinglton.Instance.CHUNK_HEIGHT + z * WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS);
                 }
             }
         }
@@ -134,9 +139,9 @@ public class World : MonoBehaviour
 
     private void _renderAllChunksMeshes() => _renderChunksMeshes(_chunks.Values.ToList());
     
-    private void _renderChunksMeshesByPosition(List<Vector3Int> chunks) => _renderChunksMeshes(_chunks.Where(coordinats => chunks.Contains(coordinats.Key)).Select(chunks => chunks.Value).ToList());
+    private void _renderChunksMeshesByPosition(Vector3Int[] chunks) => _renderChunksMeshes(_chunks.Where(coordinats => chunks.Contains(coordinats.Key)).Select(chunks => chunks.Value).ToList());
 
-    private void _renderChunksMeshes(List<Chunk> chunks)
+    private void _renderChunksMeshes(List<ChunkAlloc> chunks)
     {
         _cachedActivationValue = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD;
 
@@ -151,9 +156,9 @@ public class World : MonoBehaviour
         return _selectVertices.SelectVerticesByCondition(_vertices.Keys.ToList(), circleCenter, circleRadius).ToList();
     }
 
-    public List<Vector3Int> GetVerticesByConditionInBounds(Func<Vector3Int, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds)
+    public void GetVerticesByConditionInBounds(Func<CustomVertex, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds)
     {
-        var result = new ConcurrentBag<Vector3Int>();
+        _bagOfVertices.Clear();
 
         Parallel.For(lowerBounds.x, upperBounds.x + 1, x =>
         {
@@ -161,28 +166,65 @@ public class World : MonoBehaviour
             {
                 for (int z = lowerBounds.z; z <= upperBounds.z; z++)
                 {
-                    var vertex = new Vector3Int(x, y, z);
+                    var vertex = new CustomVertex(x, y, z);
 
                     if (condition(vertex))
                     {
-                        result.Add(vertex);
+                        _bagOfVertices.Add(vertex);
                     }
                 }
             }
         });
 
-        return result.ToList();
+        int index = 0;
+        foreach(var item in _bagOfVertices)
+        {
+            _updatingVerticesHolder[index] = item;
+            index++;
+        }
+
+        _updatingVerticesHolderSize = index + 1;
     }
 
-    public void AddVerticesActivation(List<Vector3Int> vertices, float value)
-    {
-        Parallel.ForEach(vertices, vertexCoords =>
-        {
-            if (_vertices.ContainsKey(vertexCoords)) _vertices[vertexCoords].AddActivation(activationIncrement: value);
-        });
-        
-        List<Vector3Int> affectedChunks = ChunkStaticManager.GetChunksContainingVertices(vertices);
+    private Vector3Int[] vertices = new Vector3Int[100000];
 
+    public void AddVerticesActivation(float value)
+    {
+        int index = 0;
+
+        // Iterate only over the relevant part of the array
+        Parallel.For(0, _updatingVerticesHolderSize, i =>
+        {
+            var vertexCoords = _updatingVerticesHolder[i];
+            Vector3Int vertex = new (vertexCoords.x, vertexCoords.y, vertexCoords.z); 
+
+            if (_vertices.ContainsKey(vertex))
+            {
+                _vertices[vertex].AddActivation(activationIncrement: value);
+                vertices[index] = vertex;
+                System.Threading.Interlocked.Increment(ref index);
+            }
+        });
+
+        // Pass only the relevant part of the array to GetChunksContainingVertices
+        var affectedChunks = ChunkStaticManagerAlloc.GetChunksContainingVertices(vertices, index + 1);
+
+        // Render the affected chunks
         _renderChunksMeshesByPosition(affectedChunks);
     }
+}
+
+public struct CustomVertex
+{
+    public int x;
+    public int y;
+    public int z;
+
+    public CustomVertex (int x, int y, int z)
+    {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
 }
