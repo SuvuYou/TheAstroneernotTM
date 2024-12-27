@@ -76,7 +76,6 @@ public class World : MonoBehaviour
 
                 if (_vertices.ContainsKey(new Vector3Int(globalColumnPos.x, 0, globalColumnPos.y))) continue;
 
-
                 var columnHeight = Noise.GenerateNoiseAtPosition(globalColumnPos, WorldDataSinglton.Instance.TERRAIN_NOISE_SETTINGS) * WorldDataSinglton.Instance.CHUNK_HEIGHT;
 
                 for (int y = WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS - 1; y >= 0; y--)
@@ -152,14 +151,23 @@ public class World : MonoBehaviour
         return _selectVertices.SelectVerticesByCondition(_vertices.Keys.ToList(), circleCenter, circleRadius).ToList();
     }
 
-    public List<Vector3Int> GetVerticesByCondition(Func<Vector3Int, bool> condition)
+    public List<Vector3Int> GetVerticesByConditionInBounds(Func<Vector3Int, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds)
     {
         var result = new ConcurrentBag<Vector3Int>();
-        Parallel.ForEach(_vertices.Keys, vertex =>
+
+        Parallel.For(lowerBounds.x, upperBounds.x + 1, x =>
         {
-            if (condition(vertex))
+            for (int y = lowerBounds.y; y <= upperBounds.y; y++)
             {
-                result.Add(vertex);
+                for (int z = lowerBounds.z; z <= upperBounds.z; z++)
+                {
+                    var vertex = new Vector3Int(x, y, z);
+
+                    if (condition(vertex))
+                    {
+                        result.Add(vertex);
+                    }
+                }
             }
         });
 

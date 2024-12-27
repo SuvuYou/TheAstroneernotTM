@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
@@ -39,7 +38,9 @@ public class PlayerControls : MonoBehaviour
 
     private void _updateActivationValueInSphereRadious()
     {
-        var vertices = _worldRef.GetVerticesInRadius(_sphereVisual.transform.position, _sphereVisual.SphereRadius);
+        var condition = _sphereVisual.GetConditionFunction(_sphereVisual.transform.position);
+
+        var vertices = _worldRef.GetVerticesByConditionInBounds(condition, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds());
         
         float value = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
 

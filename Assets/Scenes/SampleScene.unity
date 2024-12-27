@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eedaa2958113c9d4ba66f4ef4364bfdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _worldRef: {fileID: 984108929}
+  _worldRef: {fileID: 984108939}
   _sphereVisualPrefab: {fileID: -719793524212530151, guid: 686d4c308dd2a164cbcb39655f028bc4,
     type: 3}
   _playerInputValues: {fileID: 11400000, guid: 7162920f0fa53ea45a3f5237ba349333, type: 2}
@@ -641,7 +641,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 984108929}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: World, Assembly-CSharp
         m_MethodName: Regenerate
         m_Mode: 1
@@ -750,7 +750,7 @@ GameObject:
   m_Component:
   - component: {fileID: 984108930}
   - component: {fileID: 984108934}
-  - component: {fileID: 984108929}
+  - component: {fileID: 984108939}
   - component: {fileID: 984108937}
   - component: {fileID: 984108938}
   - component: {fileID: 984108936}
@@ -761,22 +761,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &984108929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 984108928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ff6d32913151e7468c1bf4d658791e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _chunkPrefab: {fileID: 4864710737022952202, guid: 1e0daaff100a4e946b6bbb5f572bca07,
-    type: 3}
-  _computeCubes: {fileID: 984108937}
-  _selectVertices: {fileID: 984108938}
 --- !u!4 &984108930
 Transform:
   m_ObjectHideFlags: 0
@@ -860,6 +844,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _computeShader: {fileID: 7200000, guid: 82842923b0532794aa2b5da401e13111, type: 3}
+--- !u!114 &984108939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984108928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72e6fe7f20a4c22438b99ae5fbbd9b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _chunkPrefab: {fileID: 4864710737022952202, guid: 1e0daaff100a4e946b6bbb5f572bca07,
+    type: 3}
+  _computeCubes: {fileID: 984108937}
+  _selectVertices: {fileID: 984108938}
 --- !u!1 &1365107414
 GameObject:
   m_ObjectHideFlags: 0

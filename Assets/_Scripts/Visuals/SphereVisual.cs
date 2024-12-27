@@ -20,6 +20,8 @@ public class SphereVisual : MonoBehaviour
     
     public bool IsVertexInSphere(Vector3Int vertex) => Vector3.Distance(transform.position, vertex) <= SphereRadius;
 
+    public Func<Vector3Int, bool> GetConditionFunction (Vector3 spherePosition) => (vertex) => Vector3.Distance(spherePosition, vertex) <= SphereRadius;
+
     public void Activate() => gameObject.SetActive(true);
 
     public void Deactivate() => gameObject.SetActive(false);
@@ -32,4 +34,8 @@ public class SphereVisual : MonoBehaviour
 
         transform.localScale = new Vector3(SphereRadius, SphereRadius, SphereRadius);
     }
+
+    public Vector3Int GetLowerSphereBounds() => new ((int)transform.position.x - (int)SphereRadius, (int)transform.position.y - (int)SphereRadius, (int)transform.position.z - (int)SphereRadius);
+
+    public Vector3Int GetUpperSphereBounds() => new ((int)transform.position.x + (int)SphereRadius, (int)transform.position.y + (int)SphereRadius, (int)transform.position.z + (int)SphereRadius);
 }
