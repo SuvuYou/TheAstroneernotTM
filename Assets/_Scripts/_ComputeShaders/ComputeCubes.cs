@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 struct Triangle {
@@ -10,7 +8,7 @@ struct Triangle {
 
 public class ComputeCubes : MonoBehaviour
 {
-    // Needs to be the same as in the MarchingCubesConst.hlsl
+    // WARNING: Needs to be the same as in the MarchingCubesConst.hlsl
     private static readonly int NUM_THREADS = 8;
 
     [SerializeField]
@@ -20,19 +18,21 @@ public class ComputeCubes : MonoBehaviour
     private ComputeBuffer _trianglesBuffer;
     private ComputeBuffer _trianglesCountBuffer;
 
+    private PreallocatedArray<Triangle> _triangles = new(12000);
+
     private void Awake()
     {
         _createBuffers();
     }
 
-    public List<Vector3> ComputeTriangleVertices(List<Vector4> verticesWithActivation)
+    public void ComputeTriangleVertices(Vector4[] verticesWithActivation, ref PreallocatedArray<Vector3> outputVertices)
     {
-        Triangle[] triangles = _computeTrianglesOnGPU(verticesWithActivation);
+        _computeTrianglesOnGPU(verticesWithActivation);
 
-        return _extractTriangleVertices(triangles);
+        _extractTriangleVertices(ref outputVertices);
     }
 
-    private Triangle[] _computeTrianglesOnGPU(List<Vector4> verticesWithActivation)
+    private void _computeTrianglesOnGPU(Vector4[] verticesWithActivation)
     {
         int numberOfThreadsGroupsHorizontally = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS) / NUM_THREADS);
         int numberOfThreadsGroupsVertically = Mathf.CeilToInt((WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS) / NUM_THREADS);
@@ -59,24 +59,18 @@ public class ComputeCubes : MonoBehaviour
         int triangleCount = triangleCountArray[0]; 
 
         // Retrieve the actual triangle data
-        Triangle[] triangles = new Triangle[triangleCount];
-        _trianglesBuffer.GetData(triangles, 0, 0, triangleCount);
-
-        return triangles;
+        _trianglesBuffer.GetData(_triangles.FullArray, 0, 0, triangleCount);
+        _triangles.SetCount(triangleCount);
     }
 
-    private List<Vector3> _extractTriangleVertices(Triangle[] triangles)
+    private void _extractTriangleVertices(ref PreallocatedArray<Vector3> outputVertices)
     {
-        List<Vector3> vertices = new();
-
-        for(int i = 0; i < triangles.Length; i++)
+        for(int i = 0; i < _triangles.Count; i++)
         {
-            vertices.Add(triangles[i].VertexA);
-            vertices.Add(triangles[i].VertexB);
-            vertices.Add(triangles[i].VertexC);
+            outputVertices.Add(_triangles.FullArray[i].VertexA);
+            outputVertices.Add(_triangles.FullArray[i].VertexB);
+            outputVertices.Add(_triangles.FullArray[i].VertexC);
         }
-
-        return vertices;
     }
 
     private void _createBuffers()

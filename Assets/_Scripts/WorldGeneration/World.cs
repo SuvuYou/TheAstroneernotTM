@@ -115,15 +115,15 @@ public class World : MonoBehaviour
     {
         for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
         {
-            for (int z = 0; z < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; z++)
-            {
-                for (int y = WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS - 1; y >= 0; y--)
-                {   
+            for (int y = 0; y < WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS; y++)
+            {   
+                for (int z = 0; z < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; z++)
+                {
                     var localVertexPos = new Vector3Int(x, y, z);
                     var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
 
                     _vertices[globalVertexPos].AddParentChunkLink(chunk);
-                    chunk.AddVertexLink(_vertices[globalVertexPos], x * WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS + y * WorldDataSinglton.Instance.CHUNK_HEIGHT + z * WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS);
+                    chunk.AddVertexLink(_vertices[globalVertexPos], localVertexPos);
                 }
             }
         }

@@ -1,13 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ChunkAlloc : MonoBehaviour
 {
     public Vector3Int ChunkPositionInWorldSpace { get; private set; }
 
-    public Vertex[] Vertices { get; private set; } = new Vertex[0];
-    public Vector4[] VerticesActivations { get; private set; } = new Vector4[0];
+    public Vertex[] Vertices { get; private set; }
+    public Vector4[] VerticesActivations { get; private set; }
+
+    private ChunkMeshData _meshData = new();
 
     [SerializeField]
     private ChunkMeshRenderer _meshRenderer;
@@ -23,13 +23,6 @@ public class ChunkAlloc : MonoBehaviour
     {
         for (int i = 0; i < Vertices.Length; i++)
         {
-            if (Vertices[i] == null) 
-            {
-                // Debug.Log(i);
-
-                continue;
-            }
-
             VerticesActivations[i].x = Vertices[i].Coordinats.x - ChunkPositionInWorldSpace.x;
             VerticesActivations[i].y = Vertices[i].Coordinats.y - ChunkPositionInWorldSpace.y;
             VerticesActivations[i].z = Vertices[i].Coordinats.z - ChunkPositionInWorldSpace.z;
@@ -39,32 +32,20 @@ public class ChunkAlloc : MonoBehaviour
 
     public void GenerateChunkMesh(ComputeCubes computeCubes)
     {
+        _convertVerticesToActivationValuesList();
 
-        for (int i = 0; i < Vertices.Length; i++)
+        computeCubes.ComputeTriangleVertices(VerticesActivations, ref _meshData.Vertices);
+
+        if (_meshData.Vertices.Count == 0) 
         {
-            if (Vertices[i] == null) 
-            {
-                Debug.Log(i);
+            _meshRenderer.ClearMesh();
 
-                continue;
-            }
+            return;
         }
-        // _convertVerticesToActivationValuesList();
 
-        // List<Vector3> vertices = computeCubes.ComputeTriangleVertices(VerticesActivations.ToList());
+        _meshRenderer.RenderMesh(_meshData);
 
-        // if (vertices.Count == 0) 
-        // {
-        //     _meshRenderer.ClearMesh();
-
-        //     return;
-        // }
-
-        // ChunkMeshData meshData = new();
-
-        // meshData.PushVertices(vertices.ToList());
-
-        // _meshRenderer.RenderMesh(meshData);
+        _meshData.Vertices.ResetCount();
     }
 
     public void LinkVertices(Vertex[] vertices)
@@ -72,10 +53,10 @@ public class ChunkAlloc : MonoBehaviour
         Vertices = vertices;
     }
 
-    public void AddVertexLink(Vertex vertex, int index)
+    public void AddVertexLink(Vertex vertex, Vector3Int localPosition)
     {
-        // Vector3Int localVertexPos = vertex.Coordinats - ChunkPositionInWorldSpace;
-        // var index = localVertexPos.z + localVertexPos.y * WorldDataSinglton.Instance.CHUNK_HEIGHT + localVertexPos.x * WorldDataSinglton.Instance.CHUNK_HEIGHT * WorldDataSinglton.Instance.CHUNK_SIZE;
+        // WARNING: Needs to be the same as in MarchingCubes.compute indexFromCoord function
+        var index = localPosition.x * WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS * WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS + localPosition.z * WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS + localPosition.y;
 
         Vertices[index] = vertex;
     }

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -42,13 +43,12 @@ public class ChunkMeshRenderer : MonoBehaviour
     {
         _mesh.Clear();
 
-        _mesh.vertices = meshData.Vertices.ToArray();
-        _mesh.triangles = meshData.Triangles.ToArray();
+        _mesh.SetVertices(meshData.Vertices.GetActiveArraySegment().Array, 0, meshData.Vertices.Count);
+        _mesh.SetTriangles(meshData.Triangles.GetActiveArraySegment().Array, 0, meshData.Triangles.Count, 0);
 
         _mesh.RecalculateNormals();
 
         _meshCollider.sharedMesh = null;
-
         _meshCollider.sharedMesh = _mesh;
     }
 }

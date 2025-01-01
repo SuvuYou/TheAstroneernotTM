@@ -48,7 +48,7 @@ void March(uint3 id : SV_DispatchThreadID) {
     int cubeIndex = 0;
 
     for (int i = 0; i < 8; i++) {
-        if (cubeCorners[i].w < activationThreashold) {
+        if (cubeCorners[i].w > activationThreashold) {
             cubeIndex |= (1 << i);
         }
     }
