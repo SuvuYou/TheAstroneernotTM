@@ -40,14 +40,12 @@ public class PlayerControls : MonoBehaviour
     {
         var condition = _sphereVisual.GetConditionFunction(_sphereVisual.transform.position);
 
-        var vertices = _worldRef.GetVerticesByConditionInBounds(condition, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds());
-        
-        float value = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
+        float activationValueIncrement = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
 
         if (_isAddingMode)
-            value *= -1;
+            activationValueIncrement *= -1;
 
-        _worldRef.AddVerticesActivation(vertices, value);
+        _worldRef.AddActivationToVerticesByCondition(condition, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds(), activationValueIncrement);
     }
 
     private void _moveSphereVisual()
@@ -69,6 +67,8 @@ public class PlayerControls : MonoBehaviour
             {
                 _sphereVisual.MoveTo(hit.point);
                 _sphereVisual.Activate();
+
+                break;
             }
         }
     }

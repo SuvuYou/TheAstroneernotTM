@@ -20,7 +20,16 @@ public class SphereVisual : MonoBehaviour
     
     public bool IsVertexInSphere(Vector3Int vertex) => Vector3.Distance(transform.position, vertex) <= SphereRadius;
 
-    public Func<Vector3Int, bool> GetConditionFunction (Vector3 spherePosition) => (vertex) => Vector3.Distance(spherePosition, vertex) <= SphereRadius;
+    public Func<Vector3Int, bool> GetConditionFunction (Vector3 spherePosition) => (vertex) =>_sqrDistance(spherePosition, vertex) <= SphereRadius * SphereRadius;
+
+    private float _sqrDistance(Vector3 pos, Vector3Int vertex)
+    {
+        var numx = pos.x - vertex.x;
+        var numy = pos.y - vertex.y;
+        var numz = pos.z - vertex.z;
+
+        return numx * numx + numy * numy + numz * numz;
+    }
 
     public void Activate() => gameObject.SetActive(true);
 
@@ -31,6 +40,8 @@ public class SphereVisual : MonoBehaviour
         SphereRadius += _playerInputValues.MouseMovementInput.x * _sphereRadiusSensitivity;
 
         if (SphereRadius <= 0.1f) SphereRadius = 0.1f;
+
+        SphereRadius = 10f;
 
         transform.localScale = new Vector3(SphereRadius, SphereRadius, SphereRadius);
     }

@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
 
 public class World : MonoBehaviour
 {
-    private Dictionary<Vector3Int, Chunk> _chunks = new();
-    private Dictionary<Vector3Int, Vertex> _vertices = new();
+    private Dictionary<Vector3Int, ChunkAlloc> _chunks = new();
 
     [SerializeField]
-    private Chunk _chunkPrefab;
+    private ChunkAlloc _chunkPrefab;
 
     [SerializeField]
     private ComputeCubes _computeCubes;
@@ -20,6 +17,8 @@ public class World : MonoBehaviour
     private SelectVertices _selectVertices;
 
     private float _cachedActivationValue = 0;
+
+    private VerticesStorage _verticesStorage = new();
 
     private void Start()
     {
@@ -47,13 +46,13 @@ public class World : MonoBehaviour
             for (int z = 0; z < WorldDataSinglton.Instance.RENDER_DISTANCE; z += 1)
             {
                 var chunk = _createChunk(x, z);
-                _createChunkVertices(chunk); 
-                _linkVerticesToChunks(chunk);
+                _verticesStorage.CreateChunkVertices(chunk);
+                _verticesStorage.LinkVerticesToChunks(chunk);
             }
         }
     }
 
-    private Chunk _createChunk(int chunkPositionX, int chunkPositionZ)
+    private ChunkAlloc _createChunk(int chunkPositionX, int chunkPositionZ)
     {
         var chunkPositionInWorldSpace = new Vector3Int(chunkPositionX, 0, chunkPositionZ) * WorldDataSinglton.Instance.CHUNK_SIZE;
         var chunk = Instantiate(_chunkPrefab, chunkPositionInWorldSpace, Quaternion.identity);
@@ -63,65 +62,6 @@ public class World : MonoBehaviour
         _chunks.Add(chunkPositionInWorldSpace, chunk);
 
         return chunk;
-    }
-
-    private void _createChunkVertices(Chunk chunk)
-    {
-        for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
-        {
-            for (int z = 0; z < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; z++)
-            {
-                var localColumnPos = new Vector2Int(x, z);
-                var globalColumnPos = localColumnPos + new Vector2Int(chunk.ChunkPositionInWorldSpace.x, chunk.ChunkPositionInWorldSpace.z);
-
-                if (_vertices.ContainsKey(new Vector3Int(globalColumnPos.x, 0, globalColumnPos.y))) continue;
-
-                var columnHeight = Noise.GenerateNoiseAtPosition(globalColumnPos, WorldDataSinglton.Instance.TERRAIN_NOISE_SETTINGS) * WorldDataSinglton.Instance.CHUNK_HEIGHT;
-
-                for (int y = WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS - 1; y >= 0; y--)
-                {   
-                    var localVertexPos = new Vector3Int(x, y, z);
-                    var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
-                    
-                    var activationValue = 0f;
-
-                    if (!ChunkStaticManager.IsVertexInOuterLayer(globalVertexPos))
-                    {
-                        if (y <= 1)
-                            activationValue = 1f; 
-                        else if (y > columnHeight)
-                            activationValue = 0f; 
-                        else if (y > WorldDataSinglton.Instance.CAVE_THRESHOLD && y <= columnHeight)
-                            activationValue = 1f; 
-                        else
-                            activationValue = Noise.GenerateNoiseAtPosition(globalVertexPos, WorldDataSinglton.Instance.CAVE_NOISE_SETTINGS);
-                    }
-
-                    // Check if vertex is gooning and an the edge
-                    var isEdgeVertex = x == 0 || x == WorldDataSinglton.Instance.CHUNK_SIZE || z == 0 || z == WorldDataSinglton.Instance.CHUNK_SIZE;
-                    
-                    _vertices.Add(globalVertexPos, new Vertex(globalVertexPos, activationValue, isEdgeVertex));
-                }
-            }
-        }
-    }
-
-    private void _linkVerticesToChunks(Chunk chunk)
-    {
-        for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
-        {
-            for (int z = 0; z < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; z++)
-            {
-                for (int y = WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS - 1; y >= 0; y--)
-                {   
-                    var localVertexPos = new Vector3Int(x, y, z);
-                    var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
-
-                    _vertices[globalVertexPos].AddParentChunkLink(chunk);
-                    chunk.AddVertexLink(_vertices[globalVertexPos]);
-                }
-            }
-        }
     }
 
     private void _clearChunks()
@@ -134,9 +74,9 @@ public class World : MonoBehaviour
 
     private void _renderAllChunksMeshes() => _renderChunksMeshes(_chunks.Values.ToList());
     
-    private void _renderChunksMeshesByPosition(List<Vector3Int> chunks) => _renderChunksMeshes(_chunks.Where(coordinats => chunks.Contains(coordinats.Key)).Select(chunks => chunks.Value).ToList());
+    private void _renderChunksMeshesByPosition(Vector3Int[] chunks) => _renderChunksMeshes(_chunks.Where(coordinats => chunks.Contains(coordinats.Key)).Select(chunks => chunks.Value).ToList());
 
-    private void _renderChunksMeshes(List<Chunk> chunks)
+    private void _renderChunksMeshes(List<ChunkAlloc> chunks)
     {
         _cachedActivationValue = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD;
 
@@ -146,43 +86,10 @@ public class World : MonoBehaviour
         }
     }
 
-    public List<Vector3Int> GetVerticesInRadius(Vector3 circleCenter, float circleRadius)
+    public void AddActivationToVerticesByCondition(Func<Vector3Int, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds, float activationValueIncrement)
     {
-        return _selectVertices.SelectVerticesByCondition(_vertices.Keys.ToList(), circleCenter, circleRadius).ToList();
-    }
-
-    public List<Vector3Int> GetVerticesByConditionInBounds(Func<Vector3Int, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds)
-    {
-        var result = new ConcurrentBag<Vector3Int>();
-
-        Parallel.For(lowerBounds.x, upperBounds.x + 1, x =>
-        {
-            for (int y = lowerBounds.y; y <= upperBounds.y; y++)
-            {
-                for (int z = lowerBounds.z; z <= upperBounds.z; z++)
-                {
-                    var vertex = new Vector3Int(x, y, z);
-
-                    if (condition(vertex))
-                    {
-                        result.Add(vertex);
-                    }
-                }
-            }
-        });
-
-        return result.ToList();
-    }
-
-    public void AddVerticesActivation(List<Vector3Int> vertices, float value)
-    {
-        Parallel.ForEach(vertices, vertexCoords =>
-        {
-            if (_vertices.ContainsKey(vertexCoords)) _vertices[vertexCoords].AddActivation(activationIncrement: value);
-        });
-        
-        List<Vector3Int> affectedChunks = ChunkStaticManager.GetChunksContainingVertices(vertices);
-
-        _renderChunksMeshesByPosition(affectedChunks);
+        _verticesStorage.SelectVerticesByConditionInBounds(condition, lowerBounds, upperBounds);
+        _verticesStorage.AddActivationToSelectedVertices(activationValueIncrement);
+        _renderChunksMeshesByPosition(_verticesStorage.GetChunksOfSelectedVertices());
     }
 }

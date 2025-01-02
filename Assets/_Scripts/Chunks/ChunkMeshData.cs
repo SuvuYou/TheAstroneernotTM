@@ -1,19 +1,32 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ChunkMeshData
 {
-    public List<Vector3> Vertices { get; private set; } = new ();
-    public List<int> Triangles { get => _generateTriangles(Vertices); }
+    private const int INIT_VERTICES_LIMIT = 12000;
 
-    public void PushVertices(List<Vector3> vertices)
+    private PreallocatedArray<Vector3> _vertices = new (INIT_VERTICES_LIMIT);
+    private PreallocatedArray<int> _triangles = new (INIT_VERTICES_LIMIT);
+
+    public PreallocatedArray<Vector3> GetVertices() => _vertices;
+    public ref PreallocatedArray<Vector3> GetVerticesRef() => ref _vertices;
+
+    public PreallocatedArray<int> GetTriangles() 
     {
-        Vertices.AddRange(vertices);
+        _triangles.SetCount(_vertices.Count);
+
+        return _triangles;
     }
 
-    private List<int> _generateTriangles(List<Vector3> vertices)
+    public ChunkMeshData() 
+    { 
+        _initTrianglesPreallocatedArray(INIT_VERTICES_LIMIT);
+    }
+
+    private void _initTrianglesPreallocatedArray(int verticesCount)
     {
-        return Enumerable.Range(0, vertices.Count).ToList();
+        for (int i = 0; i < verticesCount; i++)
+        {
+            _triangles.AddWithResize(i);
+        }
     }
 }

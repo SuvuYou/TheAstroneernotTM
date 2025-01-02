@@ -790,7 +790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acttivationThreshold: 0.38
   _caveThreshold: 15
-  _renderDistance: 8
+  _renderDistance: 16
   _chunkSize: 15
   _chunkHeight: 31
   _terrainNoiseSettings: {fileID: 11400000, guid: 91a786d14ce7e4b458167b40c484b823,
@@ -856,7 +856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72e6fe7f20a4c22438b99ae5fbbd9b5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chunkPrefab: {fileID: 4864710737022952202, guid: 1e0daaff100a4e946b6bbb5f572bca07,
+  _chunkPrefab: {fileID: -2061124823904313057, guid: 1e0daaff100a4e946b6bbb5f572bca07,
     type: 3}
   _computeCubes: {fileID: 984108937}
   _selectVertices: {fileID: 984108938}
