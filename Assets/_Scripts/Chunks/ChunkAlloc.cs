@@ -48,11 +48,6 @@ public class ChunkAlloc : MonoBehaviour
         _meshData.GetVertices().ResetCount();
     }
 
-    public void LinkVertices(Vertex[] vertices)
-    {
-        Vertices = vertices;
-    }
-
     public void AddVertexLink(Vertex vertex, Vector3Int localPosition)
     {
         // WARNING: Needs to be the same as in MarchingCubes.compute indexFromCoord function
