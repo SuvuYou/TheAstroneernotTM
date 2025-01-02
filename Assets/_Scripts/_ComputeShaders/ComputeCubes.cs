@@ -18,7 +18,7 @@ public class ComputeCubes : MonoBehaviour
     private ComputeBuffer _trianglesBuffer;
     private ComputeBuffer _trianglesCountBuffer;
 
-    private PreallocatedArray<Triangle> _triangles = new(12000);
+    private PreallocatedArray<Triangle> _triangles = new(5000);
 
     private void Awake()
     {
@@ -58,18 +58,19 @@ public class ComputeCubes : MonoBehaviour
         _trianglesCountBuffer.GetData(triangleCountArray);
         int triangleCount = triangleCountArray[0]; 
 
+        _triangles.SetCount(triangleCount);
+
         // Retrieve the actual triangle data
         _trianglesBuffer.GetData(_triangles.FullArray, 0, 0, triangleCount);
-        _triangles.SetCount(triangleCount);
     }
 
     private void _extractTriangleVertices(ref PreallocatedArray<Vector3> outputVertices)
     {
         for(int i = 0; i < _triangles.Count; i++)
         {
-            outputVertices.Add(_triangles.FullArray[i].VertexA);
-            outputVertices.Add(_triangles.FullArray[i].VertexB);
-            outputVertices.Add(_triangles.FullArray[i].VertexC);
+            outputVertices.AddWithResize(_triangles.FullArray[i].VertexA);
+            outputVertices.AddWithResize(_triangles.FullArray[i].VertexB);
+            outputVertices.AddWithResize(_triangles.FullArray[i].VertexC);
         }
     }
 

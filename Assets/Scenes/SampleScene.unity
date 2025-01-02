@@ -790,7 +790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acttivationThreshold: 0.38
   _caveThreshold: 15
-  _renderDistance: 8
+  _renderDistance: 16
   _chunkSize: 15
   _chunkHeight: 31
   _terrainNoiseSettings: {fileID: 11400000, guid: 91a786d14ce7e4b458167b40c484b823,

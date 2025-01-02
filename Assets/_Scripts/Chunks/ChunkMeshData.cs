@@ -1,32 +1,32 @@
-using System;
 using UnityEngine;
 
 public class ChunkMeshData
 {
-    private const int VERTICES_LIMIT = 20000;
+    private const int INIT_VERTICES_LIMIT = 12000;
 
-    public PreallocatedArray<Vector3> Vertices = new (VERTICES_LIMIT);
-    private PreallocatedArray<int> _triangles = new (VERTICES_LIMIT);
+    private PreallocatedArray<Vector3> _vertices = new (INIT_VERTICES_LIMIT);
+    private PreallocatedArray<int> _triangles = new (INIT_VERTICES_LIMIT);
 
-    public PreallocatedArray<int> Triangles { get => _getTriangles(Vertices.Count); }
+    public PreallocatedArray<Vector3> GetVertices() => _vertices;
+    public ref PreallocatedArray<Vector3> GetVerticesRef() => ref _vertices;
+
+    public PreallocatedArray<int> GetTriangles() 
+    {
+        _triangles.SetCount(_vertices.Count);
+
+        return _triangles;
+    }
 
     public ChunkMeshData() 
     { 
-        _initTrianglesPreallocatedArray(VERTICES_LIMIT);
+        _initTrianglesPreallocatedArray(INIT_VERTICES_LIMIT);
     }
 
     private void _initTrianglesPreallocatedArray(int verticesCount)
     {
         for (int i = 0; i < verticesCount; i++)
         {
-            _triangles.Add(i);
+            _triangles.AddWithResize(i);
         }
     }
-
-    private PreallocatedArray<int> _getTriangles(int verticesCount) 
-    {
-        _triangles.SetCount(verticesCount);
-
-        return _triangles;
-    } 
 }

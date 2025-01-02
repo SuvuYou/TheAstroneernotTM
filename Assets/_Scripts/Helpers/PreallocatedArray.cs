@@ -1,5 +1,5 @@
 using System;
-using UnityEngine;
+using System.Collections.Generic;
 
 public class PreallocatedArray<T>
 {
@@ -12,11 +12,19 @@ public class PreallocatedArray<T>
 
     public PreallocatedArray(int initialSize)
     {
-        if (initialSize <= 0)
-            throw new ArgumentException("Size must be greater than zero.", nameof(initialSize));
-        
         _array = new T[initialSize];
         _count = 0;
+    }
+
+    public void SetAt(int index, T element)
+    {
+        if (index < 0 || index >= _array.Length)
+            throw new IndexOutOfRangeException($"Index {index} is out of bounds for array of size {_array.Length}.");
+
+        if (index >= _count)
+            _count = index + 1;
+        
+        _array[index] = element;
     }
 
     public void Add(T element)
@@ -42,22 +50,13 @@ public class PreallocatedArray<T>
         _count = 0;
     }
 
-    public void SetAt(int index, T element)
-    {
-        if (index < 0 || index >= _array.Length)
-            throw new IndexOutOfRangeException($"Index {index} is out of bounds for array of size {_array.Length}.");
-
-        if (index >= _count)
-            _count = index + 1;
-        
-        _array[index] = element;
-    }
-
     public void SetCount(int newCount)
     {
-        if (newCount < 0 || newCount > _array.Length)
-            throw new ArgumentOutOfRangeException(nameof(newCount), "Count must be between 0 and the array's capacity.");
-        
+        if (newCount >= _array.Length)
+        {
+            Resize(newCount); 
+        }
+
         _count = newCount;
     }
 
@@ -76,11 +75,18 @@ public class PreallocatedArray<T>
 
     public void Resize(int newSize)
     {
-        if (newSize <= _array.Length)
-            throw new ArgumentException("New size must be greater than the current size.");
-
         T[] newArray = new T[newSize];
         Array.Copy(_array, newArray, _count);
         _array = newArray;
+    }
+
+    public bool Contains(T element)
+    {
+        for (int i = 0; i < _count; i++)
+        {
+            if (EqualityComparer<T>.Default.Equals(_array[i], element)) return true;
+        }
+
+        return false;
     }
 }

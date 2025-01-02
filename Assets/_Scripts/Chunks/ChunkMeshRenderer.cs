@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -43,8 +42,8 @@ public class ChunkMeshRenderer : MonoBehaviour
     {
         _mesh.Clear();
 
-        _mesh.SetVertices(meshData.Vertices.GetActiveArraySegment().Array, 0, meshData.Vertices.Count);
-        _mesh.SetTriangles(meshData.Triangles.GetActiveArraySegment().Array, 0, meshData.Triangles.Count, 0);
+        _mesh.SetVertices(meshData.GetVertices().GetActiveArraySegment().Array, 0, meshData.GetVertices().Count);
+        _mesh.SetTriangles(meshData.GetTriangles().GetActiveArraySegment().Array, 0, meshData.GetTriangles().Count, 0);
 
         _mesh.RecalculateNormals();
 

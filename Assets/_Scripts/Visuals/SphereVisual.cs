@@ -20,9 +20,9 @@ public class SphereVisual : MonoBehaviour
     
     public bool IsVertexInSphere(Vector3Int vertex) => Vector3.Distance(transform.position, vertex) <= SphereRadius;
 
-    public Func<CustomVertex, bool> GetConditionFunction (Vector3 spherePosition) => (vertex) =>_sqrDistance(spherePosition, vertex) <= SphereRadius * SphereRadius;
+    public Func<Vector3Int, bool> GetConditionFunction (Vector3 spherePosition) => (vertex) =>_sqrDistance(spherePosition, vertex) <= SphereRadius * SphereRadius;
 
-    private float _sqrDistance(Vector3 pos, CustomVertex vertex)
+    private float _sqrDistance(Vector3 pos, Vector3Int vertex)
     {
         var numx = pos.x - vertex.x;
         var numy = pos.y - vertex.y;

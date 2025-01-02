@@ -40,14 +40,12 @@ public class PlayerControls : MonoBehaviour
     {
         var condition = _sphereVisual.GetConditionFunction(_sphereVisual.transform.position);
 
-        _worldRef.GetVerticesByConditionInBounds(condition, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds());
-        
-        float updateValue = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
+        float activationValueIncrement = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
 
         if (_isAddingMode)
-            updateValue *= -1;
+            activationValueIncrement *= -1;
 
-        _worldRef.AddVerticesActivation(updateValue);
+        _worldRef.AddActivationToVerticesByCondition(condition, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds(), activationValueIncrement);
     }
 
     private void _moveSphereVisual()

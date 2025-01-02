@@ -34,9 +34,9 @@ public class ChunkAlloc : MonoBehaviour
     {
         _convertVerticesToActivationValuesList();
 
-        computeCubes.ComputeTriangleVertices(VerticesActivations, ref _meshData.Vertices);
+        computeCubes.ComputeTriangleVertices(VerticesActivations, ref _meshData.GetVerticesRef());
 
-        if (_meshData.Vertices.Count == 0) 
+        if (_meshData.GetVertices().Count == 0) 
         {
             _meshRenderer.ClearMesh();
 
@@ -45,7 +45,7 @@ public class ChunkAlloc : MonoBehaviour
 
         _meshRenderer.RenderMesh(_meshData);
 
-        _meshData.Vertices.ResetCount();
+        _meshData.GetVertices().ResetCount();
     }
 
     public void LinkVertices(Vertex[] vertices)
