@@ -85,7 +85,7 @@ public class VerticesStorage
                 {
                     var vertex = new Vector3Int(x, y, z);
 
-                    if (condition(vertex))
+                    if (_vertices.ContainsKey(vertex) && condition(vertex))
                     {
                         _bagOfVertices.Add(vertex);
                     }
@@ -95,9 +95,9 @@ public class VerticesStorage
         
         _selectedVerticesHolder.ResetCount();
 
-        foreach(var item in _bagOfVertices)
+        foreach(var vertex in _bagOfVertices)
         {
-            if (_vertices.ContainsKey(item)) _selectedVerticesHolder.AddWithResize(item);
+            _selectedVerticesHolder.AddWithResize(vertex); 
         }
     }
 
@@ -106,7 +106,8 @@ public class VerticesStorage
         Parallel.For(0, _selectedVerticesHolder.Count, i =>
         {
             var vertexCoords = _selectedVerticesHolder.FullArray[i];
-            _vertices[vertexCoords].AddActivation(activationIncrement);
+            
+            _vertices[vertexCoords].AddActivation(activationIncrement); 
         });
     }
 
