@@ -14,22 +14,27 @@ public class ComputeCubes : MonoBehaviour
     [SerializeField]
     private ComputeShader _computeShader;
 
+    [SerializeField]
+    private VertexTypeMaterialsManagerSO _materialManager;
+
     private ComputeBuffer _verticesBuffer;
     private ComputeBuffer _trianglesBuffer;
+    private ComputeBuffer _vertexIndicesBuffer;
     private ComputeBuffer _trianglesCountBuffer;
 
     private PreallocatedArray<Triangle> _triangles = new(5000);
+    private PreallocatedArray<int> _vertexIndices = new(5000);
 
     private void Awake()
     {
         _createBuffers();
     }
 
-    public void ComputeTriangleVertices(Vector4[] verticesWithActivation, ref PreallocatedArray<Vector3> outputVertices)
+    public void ComputeTriangleVertices(Vertex[] vertices, Vector4[] verticesWithActivation, ref PreallocatedArray<Vector3> outputVertices, ref PreallocatedArray<Vector2> outputUVs)
     {
         _computeTrianglesOnGPU(verticesWithActivation);
 
-        _extractTriangleVertices(ref outputVertices);
+        _extractTriangleVertices(vertices, ref outputVertices, ref outputUVs);
     }
 
     private void _computeTrianglesOnGPU(Vector4[] verticesWithActivation)
@@ -43,11 +48,13 @@ public class ComputeCubes : MonoBehaviour
 
         _computeShader.SetBuffer(kernelID, "vertices", _verticesBuffer);
         _computeShader.SetBuffer(kernelID, "triangles", _trianglesBuffer);
+        _computeShader.SetBuffer(kernelID, "vertexIndices", _vertexIndicesBuffer);
         _computeShader.SetFloat("activationThreashold", WorldDataSinglton.Instance.ACTIVATION_THRESHOLD);
         _computeShader.SetInt("numberOfVerticesHorizontally", WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS);
         _computeShader.SetInt("numberOfVerticesVertically", WorldDataSinglton.Instance.CHUNK_HEIGHT_WITH_INTERSECTIONS);
 
         _trianglesBuffer.SetCounterValue(0);
+        _vertexIndicesBuffer.SetCounterValue(0);
 
         _computeShader.Dispatch(kernelID, numberOfThreadsGroupsHorizontally, numberOfThreadsGroupsVertically, numberOfThreadsGroupsHorizontally);
 
@@ -59,18 +66,31 @@ public class ComputeCubes : MonoBehaviour
         int triangleCount = triangleCountArray[0]; 
 
         _triangles.SetCount(triangleCount);
+        _vertexIndices.SetCount(triangleCount);
 
         // Retrieve the actual triangle data
         _trianglesBuffer.GetData(_triangles.FullArray, 0, 0, triangleCount);
+
+        // Retrieve the indecides of the generated vertices
+        _vertexIndicesBuffer.GetData(_vertexIndices.FullArray, 0, 0, triangleCount);
     }
 
-    private void _extractTriangleVertices(ref PreallocatedArray<Vector3> outputVertices)
+    private void _extractTriangleVertices(Vertex[] vertices, ref PreallocatedArray<Vector3> outputVertices, ref PreallocatedArray<Vector2> outputUVs)
     {
         for(int i = 0; i < _triangles.Count; i++)
         {
             outputVertices.AddWithResize(_triangles.FullArray[i].VertexA);
             outputVertices.AddWithResize(_triangles.FullArray[i].VertexB);
             outputVertices.AddWithResize(_triangles.FullArray[i].VertexC);
+            
+            Rect uvs = _materialManager.GetMaterialUVsByVertexType(vertices[_vertexIndices.FullArray[i]].Type);
+
+            Vector2 uvCenter = new (uvs.center.x, uvs.center.y);
+
+            outputUVs.AddWithResize(uvCenter);
+            outputUVs.AddWithResize(uvCenter);
+            outputUVs.AddWithResize(uvCenter);
+
         }
     }
 
@@ -81,15 +101,18 @@ public class ComputeCubes : MonoBehaviour
 
         _verticesBuffer = new ComputeBuffer(verticesCount, sizeof(float) * 4);
         _trianglesBuffer = new ComputeBuffer(maxNumberOfTriangles, sizeof(float) * 3 * 3, ComputeBufferType.Append);
+        _vertexIndicesBuffer = new ComputeBuffer(maxNumberOfTriangles, sizeof(int), ComputeBufferType.Append);
         _trianglesCountBuffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.Raw);
 
         _trianglesBuffer.SetCounterValue(0);
+        _vertexIndicesBuffer.SetCounterValue(0);
     }
 
     private void OnDestroy()
     {
         _verticesBuffer?.Release();
         _trianglesBuffer?.Release();
+        _vertexIndicesBuffer?.Release();
         _trianglesCountBuffer?.Release();
     }
 }

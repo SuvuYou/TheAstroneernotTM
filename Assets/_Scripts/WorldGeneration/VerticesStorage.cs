@@ -29,7 +29,7 @@ public class VerticesStorage
                     var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
                     var avtivationValue = _selectActivationValue(localVertexPos, globalVertexPos, columnHeight);
 
-                    _createVertexAtPosition(globalVertexPos, avtivationValue);
+                    _createVertexAtPosition(globalVertexPos, VertexType.Dirt, avtivationValue);
                 }
             }
         }
@@ -47,12 +47,12 @@ public class VerticesStorage
             return Noise.GenerateNoiseAtPosition(globalVertexPos, WorldDataSinglton.Instance.CAVE_NOISE_SETTINGS);
     }
 
-    private void _createVertexAtPosition(Vector3Int globalVertexPos, float activationValue)
+    private void _createVertexAtPosition(Vector3Int globalVertexPos, VertexType vertexType, float activationValue)
     {
         // Check if vertex is gooning and an the edge
         var isEdgeVertex = ChunkStaticManagerAlloc.IsVertexIntersectingChunksOnXAxis(globalVertexPos) || ChunkStaticManagerAlloc.IsVertexIntersectingChunksOnZAxis(globalVertexPos);
         
-        _vertices.Add(globalVertexPos, new Vertex(globalVertexPos, activationValue, isEdgeVertex));
+        _vertices.Add(globalVertexPos, new Vertex(globalVertexPos, vertexType, activationValue, isEdgeVertex));
     }
 
     public void LinkVerticesToChunks(ChunkAlloc chunk)

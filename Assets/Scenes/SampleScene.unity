@@ -754,6 +754,7 @@ GameObject:
   - component: {fileID: 984108937}
   - component: {fileID: 984108938}
   - component: {fileID: 984108936}
+  - component: {fileID: 984108940}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -790,7 +791,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _acttivationThreshold: 0.38
   _caveThreshold: 15
-  _renderDistance: 16
+  _renderDistance: 8
   _chunkSize: 15
   _chunkHeight: 31
   _terrainNoiseSettings: {fileID: 11400000, guid: 91a786d14ce7e4b458167b40c484b823,
@@ -831,6 +832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _computeShader: {fileID: 7200000, guid: 372befa99ce49ed44a9b90c419017827, type: 3}
+  _materialManager: {fileID: 11400000, guid: 83ffe0c2336fb4a4db1d8db5f88c325d, type: 2}
 --- !u!114 &984108938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -860,6 +862,22 @@ MonoBehaviour:
     type: 3}
   _computeCubes: {fileID: 984108937}
   _selectVertices: {fileID: 984108938}
+--- !u!114 &984108940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984108928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 821b1a25d5c442149ae58dfdc87099d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _vertexTypeMaterialsManager: {fileID: 11400000, guid: 83ffe0c2336fb4a4db1d8db5f88c325d,
+    type: 2}
+  _shader: {fileID: -6465566751694194690, guid: f5c11032d12821446ae8d22921c3cda8,
+    type: 3}
 --- !u!1 &1365107414
 GameObject:
   m_ObjectHideFlags: 0

@@ -40,7 +40,7 @@ public class PlayerControls : MonoBehaviour
     {
         var condition = _sphereVisual.GetConditionFunction(_sphereVisual.transform.position);
 
-        float activationValueIncrement = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * Time.deltaTime;
+        float activationValueIncrement = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * 3 * Time.deltaTime;
 
         if (_isAddingMode)
             activationValueIncrement *= -1;
