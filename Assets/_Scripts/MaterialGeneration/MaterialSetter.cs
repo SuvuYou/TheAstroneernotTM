@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 class MaterialSetter : MonoBehaviour
