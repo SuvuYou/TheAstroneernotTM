@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5054339b3cca58b459643d0216d41d28, type: 3}
+  m_Name: VertexTypeMaterialsManagerSO
+  m_EditorClassIdentifier: 
+  _colorsByVertexType:
+    keyValuePairs:
+    - Key: 0
+      Value: {r: 0.3783871, g: 0.6603774, b: 0.3270737, a: 0}
+    - Key: 1
+      Value: {r: 0.34, g: 0.221, b: 0.16757144, a: 0}

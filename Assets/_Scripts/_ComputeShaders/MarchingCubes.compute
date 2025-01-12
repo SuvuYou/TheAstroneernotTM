@@ -11,7 +11,13 @@ struct Triangle {
     float3 VertexC;
 };
 
-AppendStructuredBuffer<Triangle> triangles;
+struct TriangleData {
+    Triangle triang;
+    int vertexIndex;
+};
+
+
+AppendStructuredBuffer<TriangleData> triangleData;
 RWStructuredBuffer<float4> vertices;
 
 int indexFromCoord(int3 vertex) {
@@ -68,6 +74,11 @@ void March(uint3 id : SV_DispatchThreadID) {
         tri.VertexB = interpolateVerts(cubeCorners[edgeB.x], cubeCorners[edgeB.y]);
         tri.VertexC = interpolateVerts(cubeCorners[edgeC.x], cubeCorners[edgeC.y]);
 
-        triangles.Append(tri);
+        TriangleData triData;
+
+        triData.triang = tri;
+        triData.vertexIndex = indexFromCoord(vertex);
+
+        triangleData.Append(triData);
     }
 }

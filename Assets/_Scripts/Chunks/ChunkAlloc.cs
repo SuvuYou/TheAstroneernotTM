@@ -34,18 +34,18 @@ public class ChunkAlloc : MonoBehaviour
     {
         _convertVerticesToActivationValuesList();
 
-        computeCubes.ComputeTriangleVertices(VerticesActivations, ref _meshData.GetVerticesRef());
+        computeCubes.ComputeTriangleVertices(Vertices, VerticesActivations, ref _meshData.GetVerticesRef(), ref _meshData.GetUVsRef());
 
         if (_meshData.GetVertices().Count == 0) 
         {
             _meshRenderer.ClearMesh();
+            _meshData.Clear();
 
             return;
         }
 
         _meshRenderer.RenderMesh(_meshData);
-
-        _meshData.GetVertices().ResetCount();
+        _meshData.Clear();
     }
 
     public void AddVertexLink(Vertex vertex, Vector3Int localPosition)

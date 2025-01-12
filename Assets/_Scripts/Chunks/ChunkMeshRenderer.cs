@@ -44,10 +44,12 @@ public class ChunkMeshRenderer : MonoBehaviour
 
         _mesh.SetVertices(meshData.GetVertices().GetActiveArraySegment().Array, 0, meshData.GetVertices().Count);
         _mesh.SetTriangles(meshData.GetTriangles().GetActiveArraySegment().Array, 0, meshData.GetTriangles().Count, 0);
-
+        _mesh.SetUVs(0, meshData.GetUVs().GetActiveArraySegment().Array, 0, meshData.GetUVs().Count);
+        
         _mesh.RecalculateNormals();
 
         _meshCollider.sharedMesh = null;
-        _meshCollider.sharedMesh = _mesh;
+
+        if (meshData.GetVertices().Count != 0) _meshCollider.sharedMesh = _mesh;
     }
 }

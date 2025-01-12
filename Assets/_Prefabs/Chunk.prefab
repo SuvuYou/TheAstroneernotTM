@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3057169063354720647}
   - component: {fileID: 2871789638632392193}
   - component: {fileID: -2061124823904313057}
+  - component: {fileID: 6439525194248063248}
   m_Layer: 0
   m_Name: Chunk
   m_TagString: Untagged
@@ -64,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 502fec87e6a71214ca614377d884fb7f, type: 2}
+  - {fileID: 2100000, guid: 5c18969b565d7dd4996884242854ba4f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -133,3 +134,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _meshRenderer: {fileID: 2871789638632392193}
+--- !u!114 &6439525194248063248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9013024633803117401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6577532fe84f80a4686692fb36eeebbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _vertexTypeMaterialsManager: {fileID: 11400000, guid: 83ffe0c2336fb4a4db1d8db5f88c325d,
+    type: 2}
