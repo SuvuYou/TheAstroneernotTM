@@ -4,7 +4,7 @@ using UnityEngine;
 public class Vertex 
 {
     public VertexType Type { get; set; }
-
+    
     public Vector3Int Coordinats { get; private set; }
     public float Activation { get; private set; }
     public List<ChunkAlloc> ParentChunks { get; private set; } = new();
@@ -23,5 +23,17 @@ public class Vertex
 
     public void UpdateActivation(float activation) => Activation = activation;
 
-    public void AddActivation(float activationIncrement) => Activation += activationIncrement;
+    public void AddActivation(float activationIncrement) 
+    {
+        if (Type == VertexType.Bedrock) return;
+
+        Activation += activationIncrement;
+    } 
+
+    public void AddActivation(float activationIncrement, VertexType placingVertexType) 
+    {
+        AddActivation(activationIncrement);
+
+        Type = placingVertexType;
+    } 
 }

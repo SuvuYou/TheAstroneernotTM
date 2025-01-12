@@ -49,6 +49,7 @@ public class ChunkMeshRenderer : MonoBehaviour
         _mesh.RecalculateNormals();
 
         _meshCollider.sharedMesh = null;
-        _meshCollider.sharedMesh = _mesh;
+
+        if (meshData.GetVertices().Count != 0) _meshCollider.sharedMesh = _mesh;
     }
 }

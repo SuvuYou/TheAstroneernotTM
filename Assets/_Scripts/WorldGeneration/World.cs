@@ -14,7 +14,7 @@ public class World : MonoBehaviour
     private ComputeCubes _computeCubes;
 
     [SerializeField]
-    private SelectVertices _selectVertices;
+    private VertexTypeSelector _vertexTypeSelector;
 
     private float _cachedActivationValue = 0;
 
@@ -22,6 +22,8 @@ public class World : MonoBehaviour
 
     private void Start()
     {
+        _verticesStorage.InitVertexTypeSelector(_vertexTypeSelector);
+
         _initChunks();
         _renderAllChunksMeshes();
     }

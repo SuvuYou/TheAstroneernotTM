@@ -11,6 +11,14 @@ public class VerticesStorage
 
     private PreallocatedArray<Vector3Int> _selectedVerticesHolder = new (5000); 
 
+    private VertexTypeSelector _vertexTypeSelector;
+
+    public void InitVertexTypeSelector(VertexTypeSelector vertexTypeSelector) 
+    {
+        _vertexTypeSelector = vertexTypeSelector;
+        _vertexTypeSelector.Init();
+    }
+
     public void CreateChunkVertices(ChunkAlloc chunk)
     {
         for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
@@ -29,7 +37,9 @@ public class VerticesStorage
                     var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
                     var avtivationValue = _selectActivationValue(localVertexPos, globalVertexPos, columnHeight);
 
-                    _createVertexAtPosition(globalVertexPos, VertexType.Dirt, avtivationValue);
+                    var vertexType = _vertexTypeSelector.Select(y, (int)columnHeight);
+
+                    _createVertexAtPosition(globalVertexPos, vertexType, avtivationValue);
                 }
             }
         }
@@ -37,7 +47,7 @@ public class VerticesStorage
 
     private float _selectActivationValue(Vector3Int localVertexPos, Vector3Int globalVertexPos, float columnHeight)
     {
-        if (localVertexPos.y <= 1)
+        if (localVertexPos.y <= 2)
             return 1f; 
         else if (localVertexPos.y > columnHeight)
             return 0f;
@@ -49,7 +59,7 @@ public class VerticesStorage
 
     private void _createVertexAtPosition(Vector3Int globalVertexPos, VertexType vertexType, float activationValue)
     {
-        // Check if vertex is gooning and an the edge
+        // Check if vertex is gooning and on the edge
         var isEdgeVertex = ChunkStaticManagerAlloc.IsVertexIntersectingChunksOnXAxis(globalVertexPos) || ChunkStaticManagerAlloc.IsVertexIntersectingChunksOnZAxis(globalVertexPos);
         
         _vertices.Add(globalVertexPos, new Vertex(globalVertexPos, vertexType, activationValue, isEdgeVertex));
@@ -107,7 +117,7 @@ public class VerticesStorage
         {
             var vertexCoords = _selectedVerticesHolder.FullArray[i];
             
-            _vertices[vertexCoords].AddActivation(activationIncrement); 
+            _vertices[vertexCoords].AddActivation(activationIncrement, placingVertexType: VertexType.Dirt); 
         });
     }
 

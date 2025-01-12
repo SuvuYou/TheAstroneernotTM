@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e70a49d641c8c8f4eba3bb4b5b30a7b0, type: 3}
-  m_Name: CustomVertexTypeMaterial
+  m_Script: {fileID: 11500000, guid: a23e30e289f849d46a4ce0efb9ec050f, type: 3}
+  m_Name: VertexTypeSelector
   m_EditorClassIdentifier: 
-  _shaderGraph: {fileID: -6465566751694194690, guid: f5c11032d12821446ae8d22921c3cda8,
-    type: 3}
-  Metalic: 0.718
-  Smoothness: 0
+  VertexTypeConditions:
+    keyValuePairs: []
