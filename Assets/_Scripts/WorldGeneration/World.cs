@@ -88,9 +88,9 @@ public class World : MonoBehaviour
         }
     }
 
-    public void AddActivationToVerticesByCondition(Func<Vector3Int, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds, float activationValueIncrement)
+    public void AddActivationToVerticesByCondition(Func<Vector3Int, bool> condition, Func<Vector3Int, float> percentageOfRadious, Vector3Int lowerBounds, Vector3Int upperBounds, float activationValueIncrement)
     {
-        _verticesStorage.SelectVerticesByConditionInBounds(condition, lowerBounds, upperBounds);
+        _verticesStorage.SelectVerticesByConditionInBounds(condition, percentageOfRadious, lowerBounds, upperBounds);
         _verticesStorage.AddActivationToSelectedVertices(activationValueIncrement);
         _renderChunksMeshesByPosition(_verticesStorage.GetChunksOfSelectedVertices());
     }
