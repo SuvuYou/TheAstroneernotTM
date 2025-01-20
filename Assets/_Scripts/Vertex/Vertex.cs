@@ -32,8 +32,12 @@ public class Vertex
 
     public void AddActivation(float activationIncrement, VertexType placingVertexType) 
     {
-        AddActivation(activationIncrement);
+        if (Type == VertexType.Bedrock) return;
+
+        Activation += activationIncrement;
+
+        if (activationIncrement <= 0) return;
 
         Type = placingVertexType;
-    } 
+    }
 }

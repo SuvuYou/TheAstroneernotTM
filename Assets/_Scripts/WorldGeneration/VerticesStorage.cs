@@ -4,12 +4,24 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
+public struct VertexActivationHolder
+{
+    public Vector3Int vertex;
+    public float percentageOfActivationValue;
+
+    public VertexActivationHolder(Vector3Int vertex, float percentageOfActivationValue)
+    {
+        this.vertex = vertex;
+        this.percentageOfActivationValue = percentageOfActivationValue;
+    }
+}
+
 public class VerticesStorage
 {
     private Dictionary<Vector3Int, Vertex> _vertices = new ();
-    private ConcurrentBag<Vector3Int> _bagOfVertices = new ();
 
-    private PreallocatedArray<Vector3Int> _selectedVerticesHolder = new (5000); 
+    private ConcurrentBag<VertexActivationHolder> _bagOfVertices = new ();
+    private PreallocatedArray<VertexActivationHolder> _selectedVerticesHolder = new (5000); 
 
     private VertexTypeSelector _vertexTypeSelector;
 
@@ -83,7 +95,7 @@ public class VerticesStorage
         }
     }
 
-    public void SelectVerticesByConditionInBounds(Func<Vector3Int, bool> condition, Vector3Int lowerBounds, Vector3Int upperBounds)
+    public void SelectVerticesByConditionInBounds(Func<Vector3Int, bool> condition, Func<Vector3Int, float> percentageOfRadious, Vector3Int lowerBounds, Vector3Int upperBounds)
     {
         _bagOfVertices.Clear();
 
@@ -97,7 +109,7 @@ public class VerticesStorage
 
                     if (_vertices.ContainsKey(vertex) && condition(vertex))
                     {
-                        _bagOfVertices.Add(vertex);
+                        _bagOfVertices.Add(new VertexActivationHolder(vertex, percentageOfRadious(vertex)));
                     }
                 }
             }
@@ -115,9 +127,9 @@ public class VerticesStorage
     {
         Parallel.For(0, _selectedVerticesHolder.Count, i =>
         {
-            var vertexCoords = _selectedVerticesHolder.FullArray[i];
+            var vertexActivationHolder = _selectedVerticesHolder.FullArray[i];
             
-            _vertices[vertexCoords].AddActivation(activationIncrement, placingVertexType: VertexType.Dirt); 
+            _vertices[vertexActivationHolder.vertex].AddActivation(vertexActivationHolder.percentageOfActivationValue * activationIncrement, placingVertexType: VertexType.Dirt); 
         });
     }
 

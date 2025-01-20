@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
@@ -38,14 +37,20 @@ public class PlayerControls : MonoBehaviour
 
     private void _updateActivationValueInSphereRadious()
     {
-        var condition = _sphereVisual.GetConditionFunction(_sphereVisual.transform.position);
+        var cacheSpherePosition = _sphereVisual.transform.position;
+
+        var condition = _isAddingMode ?
+            _sphereVisual.GetConditionFunction(cacheSpherePosition, cacheSpherePosition + (cacheSpherePosition - transform.position).normalized * _sphereVisual.SphereRadius, transform.position + (cacheSpherePosition - transform.position).normalized * 3) :
+            _sphereVisual.GetConditionFunction(cacheSpherePosition);
+
+        var percentageOfRadious = _sphereVisual.GetPercentageOfRadiousFunction(cacheSpherePosition);
 
         float activationValueIncrement = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD * 3 * Time.deltaTime;
 
-        if (_isAddingMode)
+        if (!_isAddingMode)
             activationValueIncrement *= -1;
 
-        _worldRef.AddActivationToVerticesByCondition(condition, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds(), activationValueIncrement);
+        _worldRef.AddActivationToVerticesByCondition(condition, percentageOfRadious, lowerBounds: _sphereVisual.GetLowerSphereBounds(), upperBounds: _sphereVisual.GetUpperSphereBounds(), activationValueIncrement);
     }
 
     private void _moveSphereVisual()

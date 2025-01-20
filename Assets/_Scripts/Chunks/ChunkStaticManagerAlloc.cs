@@ -7,13 +7,13 @@ public static class ChunkStaticManagerAlloc
     private static Vector3Int _originalChunkPositionHolder = Vector3Int.zero;
     private static PreallocatedArray<Vector3Int> _chunksHolder = new (4);
 
-    public static Vector3Int[] GetChunksContainingVertices(PreallocatedArray<Vector3Int> vertices)
+    public static Vector3Int[] GetChunksContainingVertices(PreallocatedArray<VertexActivationHolder> vertices)
     {
         _resultChunkPositions.ResetCount();
 
         for (int i = 0; i < vertices.Count; i++)
         {
-            _collectChunksContainingVertex(vertices.FullArray[i]);
+            _collectChunksContainingVertex(vertices.FullArray[i].vertex);
 
             for (int j = 0; j < _chunksHolder.Count; j++)
             {

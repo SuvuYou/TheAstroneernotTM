@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a23e30e289f849d46a4ce0efb9ec050f, type: 3}
   m_Name: VertexTypeSelector
   m_EditorClassIdentifier: 
-  VertexTypeConditions:
-    keyValuePairs: []
+  VertexTypeAtTerrainLevel:
+    keyValuePairs:
+    - Key: 2
+      Value: 0
+    - Key: 0
+      Value: 1
+    - Key: 1
+      Value: 2
