@@ -26,8 +26,7 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V))
             _isAddingMode = !_isAddingMode;
 
-        if (!_playerInputValues.IsHoldingRightMouseButton)
-            _moveSphereVisual();
+        _moveSphereVisual();
 
         if (_playerInputValues.IsHoldingLeftMouseButton)
         {

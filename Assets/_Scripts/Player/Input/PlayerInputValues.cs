@@ -1,8 +1,12 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerInputValues", menuName = "ScriptableObjects/PlayerInputValues")]
 class PlayerInputValues : ScriptableObject
 {
+    public Action OnRightMouseButtonDown { get; set; }
+    public Action OnRightMouseButtonUp { get; set; }
+    
     public Vector2 MouseMovementInput { get; private set; }
     public Vector2 MovementInput { get; private set; }
 

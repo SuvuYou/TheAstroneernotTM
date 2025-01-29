@@ -111,24 +111,14 @@ class PlayerMovement : MonoBehaviour
 
     private void _setPlatformNormal()
     {
-         Vector3 forwardDirectionOffset = _getLocalVectorDirection(_playerInputValues.MovementInput.normalized, new Vector2(_cameraInputValues.CameraLookDirection.x, _cameraInputValues.CameraLookDirection.z));
-        // Vector3 forwardDirectionOffset = new Vector3(_cameraInputValues.CameraLookDirection.x, 0, _cameraInputValues.CameraLookDirection.z).normalized * 0.5f;
-        // var backwardDirectionOffset = -forwardDirectionOffset;
-        // var rightDirectionOffset = new Vector3(forwardDirectionOffset.z, 0, forwardDirectionOffset.x);
-        // var leftDirectionOffset = -rightDirectionOffset;
+        Vector3 forwardDirectionOffset = _getLocalVectorDirection(_playerInputValues.MovementInput.normalized, new Vector2(_cameraInputValues.CameraLookDirection.x, _cameraInputValues.CameraLookDirection.z));
 
         bool isHitAhead = Physics.Raycast(transform.position + forwardDirectionOffset.normalized * 0.5f + Vector3.up * 0.5f, Vector3.down, out RaycastHit platformHitAhead, _groundCheckRaycastDistance, _groundLayerMask);
-        // bool isHitBehind = Physics.Raycast(transform.position + backwardDirectionOffset + Vector3.up * 0.5f, Vector3.down, out RaycastHit platformHitBehind, _groundCheckRaycastDistance, _groundLayerMask);
-        // bool isHitRight = Physics.Raycast(transform.position + rightDirectionOffset + Vector3.up * 0.5f, Vector3.down, out RaycastHit platformHitRight, _groundCheckRaycastDistance, _groundLayerMask);
-        // bool isHitLeft = Physics.Raycast(transform.position + leftDirectionOffset + Vector3.up * 0.5f, Vector3.down, out RaycastHit platformHitLeft, _groundCheckRaycastDistance, _groundLayerMask);
         bool isHitBeneath = Physics.Raycast(transform.position + Vector3.up * 0.01f, Vector3.down, out RaycastHit platformHitBeneath, _groundCheckRaycastDistance, _groundLayerMask);
 
         List<RaycastHit> hits = new ();
 
         if (isHitAhead) hits.Add(platformHitAhead);
-        // if (isHitBehind) hits.Add(platformHitBehind);
-        // if (isHitRight) hits.Add(platformHitRight);
-        // if (isHitLeft) hits.Add(platformHitLeft);
         if (isHitBeneath) hits.Add(platformHitBeneath);
 
         _platformSlopeNormal = Vector3.up; 

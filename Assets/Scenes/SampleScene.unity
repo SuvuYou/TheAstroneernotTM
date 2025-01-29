@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585550}
   - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
@@ -274,17 +275,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62ef732c80351664ea681a7fef369626, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1490279079}
-  _transformOffset: {x: 0, y: 4, z: -14}
-  _rotationOffset: {x: 0, y: 0, z: 0}
-  _useConstrainedPosition: 1
-  _interpolateRotation: 0
-  _interpolationSpeed: 100
-  _objectsConstrainMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _maxObjectConstrainRayDistance: 100
-  _objectsConstrainMagnitudeMargin: 1
+  _target: {fileID: 1490279079}
+  _followingTargetConfig: {fileID: 11400000, guid: db2496cf1f66e2740bd2b6a37198f697,
+    type: 2}
+  _offsetInterpolationTime: 0.2
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,6 +296,24 @@ MonoBehaviour:
   _playerInputValues: {fileID: 11400000, guid: 7162920f0fa53ea45a3f5237ba349333, type: 2}
   _cameraInputValues: {fileID: 11400000, guid: fa9b6a6b8ff67994485c53f823242d35, type: 2}
   _cameraYRotationLimit: 0.8
+--- !u!114 &330585550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4883c8faac0b64baeb0d196d8a3118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerInputValues: {fileID: 11400000, guid: 7162920f0fa53ea45a3f5237ba349333, type: 2}
+  _followingTarget: {fileID: 330585548}
+  _defaultFollowingTargetConfig: {fileID: 11400000, guid: db2496cf1f66e2740bd2b6a37198f697,
+    type: 2}
+  _rightClickFollowingTargetConfig: {fileID: 11400000, guid: 64c0bbc2e3a3b00478228835a24b38a8,
+    type: 2}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,6 +1070,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1364228270331358667, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: m_Interpolate
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3221871333697039975, guid: 20657cc1d4fe8cd479c78c8254663105,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1107,6 +1124,37 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637430528231251786, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _playerInputValues
+      value: 
+      objectReference: {fileID: 11400000, guid: 7162920f0fa53ea45a3f5237ba349333,
+        type: 2}
+    - target: {fileID: 3637430528231251786, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _focalPointOffset.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637430528231251786, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _aimingFocalPointOffset.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637430528231251786, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _aimingFocalPointOffset.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637430528231251786, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _aimingFocalPointOffset.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3637430528231251786, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _defaultFocalPointOffset.y
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4220494225444988404, guid: 20657cc1d4fe8cd479c78c8254663105,
         type: 3}

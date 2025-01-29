@@ -24,5 +24,8 @@ class PlayerInput : MonoBehaviour
     {
         _playerInputValues.SetIsHoldingLeftMouseButton(Input.GetMouseButton(0));
         _playerInputValues.SetIsHoldingRightMouseButton(Input.GetMouseButton(1));
+
+        if (Input.GetMouseButtonDown(1)) _playerInputValues.OnRightMouseButtonDown?.Invoke(); 
+        if (Input.GetMouseButtonUp(1)) _playerInputValues.OnRightMouseButtonUp?.Invoke(); 
     }
 }
