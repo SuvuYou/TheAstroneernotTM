@@ -27,5 +27,7 @@ class PlayerInput : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1)) _playerInputValues.OnRightMouseButtonDown?.Invoke(); 
         if (Input.GetMouseButtonUp(1)) _playerInputValues.OnRightMouseButtonUp?.Invoke(); 
+
+        if (Input.GetMouseButtonDown(0)) _playerInputValues.OnLeftMouseButtonDown?.Invoke();
     }
 }

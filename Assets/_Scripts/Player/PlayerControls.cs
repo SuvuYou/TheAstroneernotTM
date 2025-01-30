@@ -28,10 +28,10 @@ public class PlayerControls : MonoBehaviour
 
         _moveSphereVisual();
 
-        if (_playerInputValues.IsHoldingLeftMouseButton)
-        {
-            _updateActivationValueInSphereRadious();
-        }
+        // if (_playerInputValues.IsHoldingLeftMouseButton)
+        // {
+        //     _updateActivationValueInSphereRadious();
+        // }
     }
 
     private void _updateActivationValueInSphereRadious()

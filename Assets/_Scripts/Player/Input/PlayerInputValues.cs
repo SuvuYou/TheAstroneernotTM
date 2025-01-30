@@ -4,6 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerInputValues", menuName = "ScriptableObjects/PlayerInputValues")]
 class PlayerInputValues : ScriptableObject
 {
+    public Action OnLeftMouseButtonDown { get; set; }
+
     public Action OnRightMouseButtonDown { get; set; }
     public Action OnRightMouseButtonUp { get; set; }
     
