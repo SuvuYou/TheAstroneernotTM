@@ -314,6 +314,12 @@ MonoBehaviour:
     type: 2}
   _rightClickFollowingTargetConfig: {fileID: 11400000, guid: 64c0bbc2e3a3b00478228835a24b38a8,
     type: 2}
+--- !u!4 &371952855 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3418601738087859355, guid: 20657cc1d4fe8cd479c78c8254663105,
+    type: 3}
+  m_PrefabInstance: {fileID: 4932977464394410169}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,6 +632,7 @@ GameObject:
   - component: {fileID: 984108934}
   - component: {fileID: 984108939}
   - component: {fileID: 984108937}
+  - component: {fileID: 984108941}
   - component: {fileID: 984108938}
   - component: {fileID: 984108940}
   - component: {fileID: 984108936}
@@ -667,6 +674,7 @@ MonoBehaviour:
   _caveThreshold: 15
   _renderDistance: 8
   _chunkSize: 15
+  _rockSize: 5
   _chunkHeight: 31
   _terrainNoiseSettings: {fileID: 11400000, guid: 91a786d14ce7e4b458167b40c484b823,
     type: 2}
@@ -752,6 +760,26 @@ MonoBehaviour:
   _vertexTypeMaterialsManager: {fileID: 11400000, guid: 83ffe0c2336fb4a4db1d8db5f88c325d,
     type: 2}
   _customMaterial: {fileID: 11400000, guid: 353d5569775a810488b232416da2a7bc, type: 2}
+--- !u!114 &984108941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984108928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04cc6d0ff4c4add44a902311de5ea243, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _computeShader: {fileID: 7200000, guid: d9c6993b9a6af7e4184e9c5378879ce1, type: 3}
+  _materialManager: {fileID: 11400000, guid: 83ffe0c2336fb4a4db1d8db5f88c325d, type: 2}
+--- !u!4 &1409181475 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 382648048858061361, guid: 20657cc1d4fe8cd479c78c8254663105,
+    type: 3}
+  m_PrefabInstance: {fileID: 4932977464394410169}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1490279079 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1316197342740993359, guid: 20657cc1d4fe8cd479c78c8254663105,
@@ -1080,6 +1108,26 @@ PrefabInstance:
       propertyPath: m_Interpolate
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2962911810320850560, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _computeCubes
+      value: 
+      objectReference: {fileID: 984108937}
+    - target: {fileID: 2962911810320850560, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _computeCubesRock
+      value: 
+      objectReference: {fileID: 984108941}
+    - target: {fileID: 2962911810320850560, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _projectileHoldPosition
+      value: 
+      objectReference: {fileID: 371952855}
+    - target: {fileID: 2962911810320850560, guid: 20657cc1d4fe8cd479c78c8254663105,
+        type: 3}
+      propertyPath: _projectileSpawnPosition
+      value: 
+      objectReference: {fileID: 1409181475}
     - target: {fileID: 3221871333697039975, guid: 20657cc1d4fe8cd479c78c8254663105,
         type: 3}
       propertyPath: m_LocalPosition.x

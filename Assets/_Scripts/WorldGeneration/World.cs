@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    private Dictionary<Vector3Int, ChunkAlloc> _chunks = new();
+    private Dictionary<Vector3Int, Chunk> _chunks = new();
 
     [SerializeField]
-    private ChunkAlloc _chunkPrefab;
+    private Chunk _chunkPrefab;
 
     [SerializeField]
     private ComputeCubes _computeCubes;
@@ -54,7 +54,7 @@ public class World : MonoBehaviour
         }
     }
 
-    private ChunkAlloc _createChunk(int chunkPositionX, int chunkPositionZ)
+    private Chunk _createChunk(int chunkPositionX, int chunkPositionZ)
     {
         var chunkPositionInWorldSpace = new Vector3Int(chunkPositionX, 0, chunkPositionZ) * WorldDataSinglton.Instance.CHUNK_SIZE;
         var chunk = Instantiate(_chunkPrefab, chunkPositionInWorldSpace, Quaternion.identity);
@@ -78,13 +78,13 @@ public class World : MonoBehaviour
     
     private void _renderChunksMeshesByPosition(Vector3Int[] chunks) => _renderChunksMeshes(_chunks.Where(coordinats => chunks.Contains(coordinats.Key)).Select(chunks => chunks.Value).ToList());
 
-    private void _renderChunksMeshes(List<ChunkAlloc> chunks)
+    private void _renderChunksMeshes(List<Chunk> chunks)
     {
         _cachedActivationValue = WorldDataSinglton.Instance.ACTIVATION_THRESHOLD;
 
         foreach (var chunk in chunks)
         {
-            chunk.GenerateChunkMesh(_computeCubes);
+            chunk.GenerateMesh(_computeCubes);
         }
     }
 

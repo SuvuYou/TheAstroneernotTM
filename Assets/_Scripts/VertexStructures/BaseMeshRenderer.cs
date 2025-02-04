@@ -3,11 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
-public class ChunkMeshRenderer : MonoBehaviour
+public class BaseMeshRenderer : MonoBehaviour
 {
     private Mesh _mesh;
     private MeshCollider _meshCollider;
-    private ChunkMeshData _meshData;
+    private MeshData _meshData;
     
     private void Awake()
     {
@@ -17,7 +17,7 @@ public class ChunkMeshRenderer : MonoBehaviour
         _meshCollider = GetComponent<MeshCollider>();
     }
 
-    public void SetMeshData(ChunkMeshData meshData)
+    public void SetMeshData(MeshData meshData)
     {
         _meshData = meshData;
     }
@@ -27,7 +27,7 @@ public class ChunkMeshRenderer : MonoBehaviour
         _renderMesh(_meshData);
     }
 
-    public void RenderMesh(ChunkMeshData meshData)
+    public void RenderMesh(MeshData meshData)
     {
         SetMeshData(meshData);
         _renderMesh(meshData);
@@ -38,7 +38,7 @@ public class ChunkMeshRenderer : MonoBehaviour
         _mesh.Clear();
     }
 
-    private void _renderMesh(ChunkMeshData meshData)
+    private void _renderMesh(MeshData meshData)
     {
         _mesh.Clear();
 

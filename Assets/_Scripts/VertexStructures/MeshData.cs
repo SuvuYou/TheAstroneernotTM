@@ -1,32 +1,37 @@
 using UnityEngine;
 
-public class ChunkMeshData
+public abstract class MeshData
 {
-    private const int INIT_VERTICES_LIMIT = 12000;
+    protected int INIT_VERTICES_LIMIT;
 
-    private PreallocatedArray<Vector3> _vertices = new (INIT_VERTICES_LIMIT);
-    private PreallocatedArray<int> _triangles = new (INIT_VERTICES_LIMIT);
-    private PreallocatedArray<Vector2> _UVs = new (INIT_VERTICES_LIMIT);
+    private PreallocatedArray<Vector3> _vertices;
+    private PreallocatedArray<int> _triangles;
+    private PreallocatedArray<Vector2> _UVs;
 
     public PreallocatedArray<Vector3> GetVertices() => _vertices;
     public ref PreallocatedArray<Vector3> GetVerticesRef() => ref _vertices;
 
-    public PreallocatedArray<int> GetTriangles() 
+    public PreallocatedArray<int> GetTriangles()
     {
         _triangles.SetCount(_vertices.Count);
-
         return _triangles;
     }
 
     public PreallocatedArray<Vector2> GetUVs() => _UVs;
     public ref PreallocatedArray<Vector2> GetUVsRef() => ref _UVs;
 
-    public ChunkMeshData() 
-    { 
+    protected MeshData(int verticesLimit)
+    {
+        INIT_VERTICES_LIMIT = verticesLimit;
+
+        _vertices = new PreallocatedArray<Vector3>(INIT_VERTICES_LIMIT);
+        _triangles = new PreallocatedArray<int>(INIT_VERTICES_LIMIT);
+        _UVs = new PreallocatedArray<Vector2>(INIT_VERTICES_LIMIT);
+
         _initTrianglesPreallocatedArray(INIT_VERTICES_LIMIT);
     }
 
-    public void Clear() 
+    public void Clear()
     {
         _vertices.ResetCount();
         _triangles.ResetCount();

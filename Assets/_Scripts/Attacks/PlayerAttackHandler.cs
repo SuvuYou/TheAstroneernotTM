@@ -22,6 +22,3 @@ class PlayerAttackHandler : MonoBehaviour
         _playerInputValues.OnLeftMouseButtonDown -= () => _attackController.Attack();
     }
 }
-
-
-

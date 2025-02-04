@@ -19,6 +19,9 @@ public class WorldDataSinglton : MonoBehaviour
     private int _chunkSize = 15;
 
     [SerializeField]
+    private int _rockSize = 10;
+
+    [SerializeField]
     private int _chunkHeight = 15;
 
     [SerializeField]
@@ -30,6 +33,8 @@ public class WorldDataSinglton : MonoBehaviour
     public int CAVE_THRESHOLD { get => _caveThreshold; }
 
     public float ACTIVATION_THRESHOLD { get => _acttivationThreshold; }
+
+    public int ROCK_SIZE { get => _rockSize; }
 
     public int CHUNK_SIZE { get => _chunkSize; }
 

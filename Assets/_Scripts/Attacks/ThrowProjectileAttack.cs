@@ -12,20 +12,31 @@ interface IAttackType
 class ThrowProjectileAttack : MonoBehaviour, IAttackType
 {
     [SerializeField]
+    private ComputeCubesRock _computeCubesRock;
+
+    [SerializeField]
     private RockController _projectilePrefab;
 
     private RockController _projectile;
 
-    [SerializeField]
-    private Transform _rockSpawnPosition;
+    private RockVerticesPopulator _rockVerticesPopulator;
 
     [SerializeField]
-    private Transform _rockHoldPosition;
+    private Transform _projectileSpawnPosition;
+
+    [SerializeField]
+    private Transform _projectileHoldPosition;
 
     public void Aim() 
     { 
-        _projectile = Instantiate(_projectilePrefab, _rockSpawnPosition.position, Quaternion.identity);
-        _projectile.MoveTowardsTarget(_rockHoldPosition);
+        _rockVerticesPopulator = new();
+
+        _projectile = Instantiate(_projectilePrefab, _projectileSpawnPosition.position, Quaternion.identity);
+
+        _rockVerticesPopulator.CreateRockVertices();
+        _rockVerticesPopulator.LinkVerticesToRock(_projectile.RockComponent);
+        _projectile.RockComponent.GenerateMesh(_computeCubesRock);
+        _projectile.MoveTowardsTarget(_projectileHoldPosition);
     }
 
     public void CancelAim()

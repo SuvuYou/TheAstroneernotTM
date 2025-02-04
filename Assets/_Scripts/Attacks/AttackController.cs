@@ -1,9 +1,11 @@
 using UnityEngine;
 
+[RequireComponent(typeof(IAttackType))]
 class AttackController : MonoBehaviour
 {
-    [SerializeField]
-    private ThrowProjectileAttack _attack;
+    private IAttackType _attack;
+
+    private void Awake() => _attack = GetComponent<IAttackType>();
 
     public void Attack() => _attack.Attack();
 
@@ -11,6 +13,3 @@ class AttackController : MonoBehaviour
 
     public void Aim() => _attack.Aim();
 }
-
-
-

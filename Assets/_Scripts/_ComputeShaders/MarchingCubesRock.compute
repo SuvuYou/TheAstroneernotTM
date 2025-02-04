@@ -1,0 +1,84 @@
+#pragma kernel March
+#include "Assets/_Scripts/_ComputeShaders/Libs/MarchingCubesConstRock.hlsl"
+
+int numberOfVerticesHorizontally;
+int numberOfVerticesVertically;
+float activationThreashold;
+
+struct Triangle {
+    float3 VertexA;
+    float3 VertexB;
+    float3 VertexC;
+};
+
+struct TriangleData {
+    Triangle triang;
+    int vertexIndex;
+};
+
+
+AppendStructuredBuffer<TriangleData> triangleData;
+RWStructuredBuffer<float4> vertices;
+
+int indexFromCoord(int3 vertex) {
+    return vertex.x * numberOfVerticesVertically * numberOfVerticesHorizontally + vertex.z * numberOfVerticesVertically + vertex.y;
+}
+
+float3 interpolateVerts(float4 v1, float4 v2) {
+    float t = (activationThreashold - v1.w) / (v2.w - v1.w);
+
+    return v1.xyz + t * (v2.xyz - v1.xyz);
+}
+
+[numthreads(NUM_THREADS, NUM_THREADS, NUM_THREADS)]
+void March(uint3 id : SV_DispatchThreadID) {
+    if (id.x >= numberOfVerticesHorizontally - 1 || id.y >= numberOfVerticesVertically - 1 || id.z >= numberOfVerticesHorizontally - 1) {
+        return;
+    }
+
+    int3 vertex = int3(id.x, id.y, id.z);
+
+    // 1. Get vertices of a cube 
+    float4 cubeCorners[8] = {
+        vertices[indexFromCoord(vertex)],
+        vertices[indexFromCoord(vertex + int3(1, 0, 0))],
+        vertices[indexFromCoord(vertex + int3(1, 0, 1))],
+        vertices[indexFromCoord(vertex + int3(0, 0, 1))],
+        vertices[indexFromCoord(vertex + int3(0, 1, 0))],
+        vertices[indexFromCoord(vertex + int3(1, 1, 0))],
+        vertices[indexFromCoord(vertex + int3(1, 1, 1))],
+        vertices[indexFromCoord(vertex + int3(0, 1, 1))]
+    };
+
+    // 2. Get index of the cube in triangulation table by active vertices
+    int cubeIndex = 0;
+
+    for (int i = 0; i < 8; i++) {
+        if (cubeCorners[i].w > activationThreashold) {
+            cubeIndex |= (1 << i);
+        }
+    }
+
+    // 3. Go over all triangles in triangulation table
+    for (int i = 0; TRIANGULATIONS[cubeIndex][i] != -1; i += 3) {
+
+        // 4. Get edges of the cube that need to be connected
+        int2 edgeA = EDGES[TRIANGULATIONS[cubeIndex][i]];
+        int2 edgeB = EDGES[TRIANGULATIONS[cubeIndex][i + 1]];
+        int2 edgeC = EDGES[TRIANGULATIONS[cubeIndex][i + 2]];
+
+        Triangle tri;
+
+        // 5. Find points of the triangle by interpolating points of each edge
+        tri.VertexA = interpolateVerts(cubeCorners[edgeA.x], cubeCorners[edgeA.y]);
+        tri.VertexB = interpolateVerts(cubeCorners[edgeB.x], cubeCorners[edgeB.y]);
+        tri.VertexC = interpolateVerts(cubeCorners[edgeC.x], cubeCorners[edgeC.y]);
+
+        TriangleData triData;
+
+        triData.triang = tri;
+        triData.vertexIndex = indexFromCoord(vertex);
+
+        triangleData.Append(triData);
+    }
+}

@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rock))]
 class RockController : MonoBehaviour
 {
     private enum RockStates
@@ -11,6 +12,8 @@ class RockController : MonoBehaviour
         Falling,
         Launched
     }
+
+    public Rock RockComponent { get; private set; }
 
     private Rigidbody _rb;
     private RockStates _state;
@@ -24,8 +27,10 @@ class RockController : MonoBehaviour
 
     private void Awake()
     {
+        RockComponent = GetComponent<Rock>();
         _rb = GetComponent<Rigidbody>();
         _state = RockStates.Idle;
+        RockComponent.Init();
     }
 
     public void MoveTowardsTarget(Transform targetPosition)

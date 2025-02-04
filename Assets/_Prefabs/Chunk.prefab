@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 3034066405614866835}
   - component: {fileID: 1895818593386352338}
   - component: {fileID: 3057169063354720647}
-  - component: {fileID: 2871789638632392193}
   - component: {fileID: -2061124823904313057}
   - component: {fileID: 6439525194248063248}
+  - component: {fileID: 7525296226181559488}
   m_Layer: 6
   m_Name: Chunk
   m_TagString: Untagged
@@ -109,18 +109,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &2871789638632392193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9013024633803117401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c35c9bac4e9d9bc478f5c71e075eadac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-2061124823904313057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 880e1ba5fb9342a4998f70e9564d1aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _meshRenderer: {fileID: 2871789638632392193}
+  _meshRenderer: {fileID: 7525296226181559488}
 --- !u!114 &6439525194248063248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,3 +136,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _vertexTypeMaterialsManager: {fileID: 11400000, guid: 83ffe0c2336fb4a4db1d8db5f88c325d,
     type: 2}
+--- !u!114 &7525296226181559488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9013024633803117401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a6f0dc540caba48b5763a359d496e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

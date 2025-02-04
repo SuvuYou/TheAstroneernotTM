@@ -67,7 +67,7 @@ public class PlayerControls : MonoBehaviour
 
         foreach(var hit in hits)
         {
-            if (hit.collider.GetComponent<ChunkMeshRenderer>() != null) 
+            if (hit.collider.GetComponent<MeshRenderer>() != null) 
             {
                 _sphereVisual.MoveTo(hit.point);
                 _sphereVisual.Activate();

@@ -31,7 +31,7 @@ public class VerticesStorage
         _vertexTypeSelector.Init();
     }
 
-    public void CreateChunkVertices(ChunkAlloc chunk)
+    public void CreateChunkVertices(Chunk chunk)
     {
         for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
         {
@@ -77,7 +77,7 @@ public class VerticesStorage
         _vertices.Add(globalVertexPos, new Vertex(globalVertexPos, vertexType, activationValue, isEdgeVertex));
     }
 
-    public void LinkVerticesToChunks(ChunkAlloc chunk)
+    public void LinkVerticesToChunks(Chunk chunk)
     {
         for (int x = 0; x < WorldDataSinglton.Instance.CHUNK_SIZE_WITH_INTERSECTIONS; x++)
         {
@@ -88,7 +88,6 @@ public class VerticesStorage
                     var localVertexPos = new Vector3Int(x, y, z);
                     var globalVertexPos = localVertexPos + chunk.ChunkPositionInWorldSpace;
 
-                    _vertices[globalVertexPos].AddParentChunkLink(chunk);
                     chunk.AddVertexLink(_vertices[globalVertexPos], localVertexPos);
                 }
             }
